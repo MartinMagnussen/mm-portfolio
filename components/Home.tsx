@@ -5,7 +5,6 @@ import Link from "next/link";
 import type { Project } from "@/lib/projects";
 import CanvasView from "@/components/CanvasView";
 import ListView from "@/components/ListView";
-import MenuOverlay from "@/components/MenuOverlay";
 import Intro from "@/components/Intro";
 import styles from "./Home.module.css";
 
@@ -13,7 +12,6 @@ type View = "spiral" | "list";
 
 export default function Home({ projects }: { projects: Project[] }) {
   const [view, setView] = useState<View>("spiral");
-  const [menuOpen, setMenuOpen] = useState(false);
 
   // Spiral is the default everywhere (incl. mobile); only fall back to the
   // calmer list view when the visitor has asked for reduced motion.
@@ -34,39 +32,36 @@ export default function Home({ projects }: { projects: Project[] }) {
           <span>m</span>
         </Link>
 
-        <div
-          className={`${styles.toggle} mono`}
-          role="group"
-          aria-label="Bytt visning"
-          data-view={view}
-        >
-          <span className={styles.slider} aria-hidden="true" />
-          <button
-            type="button"
-            data-active={view === "spiral"}
-            aria-pressed={view === "spiral"}
-            onClick={() => setView("spiral")}
+        <nav className={styles.centerNav}>
+          <div
+            className={`${styles.toggle} mono`}
+            role="group"
+            aria-label="Bytt visning"
+            data-view={view}
           >
-            spiral
-          </button>
-          <button
-            type="button"
-            data-active={view === "list"}
-            aria-pressed={view === "list"}
-            onClick={() => setView("list")}
-          >
-            liste
-          </button>
-        </div>
+            <span className={styles.slider} aria-hidden="true" />
+            <button
+              type="button"
+              data-active={view === "spiral"}
+              aria-pressed={view === "spiral"}
+              onClick={() => setView("spiral")}
+            >
+              spiral
+            </button>
+            <button
+              type="button"
+              data-active={view === "list"}
+              aria-pressed={view === "list"}
+              onClick={() => setView("list")}
+            >
+              liste
+            </button>
+          </div>
 
-        <button
-          type="button"
-          className={`${styles.menuBtn} mono`}
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen(true)}
-        >
-          meny <span className={styles.dot} aria-hidden="true" />
-        </button>
+          <Link href="/om" className={`${styles.navLink} mono`}>
+            om meg
+          </Link>
+        </nav>
       </header>
 
       <main className={styles.stage}>
@@ -93,8 +88,6 @@ export default function Home({ projects }: { projects: Project[] }) {
         </svg>
         <span className="center">✦</span>
       </div>
-
-      <MenuOverlay open={menuOpen} onClose={() => setMenuOpen(false)} />
 
       <Intro />
     </div>
