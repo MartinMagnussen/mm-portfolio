@@ -65,6 +65,9 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 ### Rettelser (runde 12, etter tilbakemelding)
 - **Ringen rettet opp:** forrige forsøk la dybden på feil akse — midtbåndet havnet bakerst (lite + blurry) og kortene snudde rundt. Nå er banen en ellipse i skjermplanet: kortene stiger på **venstre** side og kommer **ned igjen på høyre** (`x = −sin·ampX`, `y = cos·ampY`, én sømløs løkke). Størst når de sveiper gjennom midten (`scale` topper ved midthøyde), mindre øverst/nederst. Kun den **øvre buen** vipper bakover (`z = −far·240`), der den dempes og blurres lett (opptil 4px). Ingen opp-ned-vending. Stabling etter dybde; bakgrunnsbildet følger det fremste (nederste) kortet.
 
+### Rettelser (runde 13, etter tilbakemelding)
+- **Transportbånd-løkke i stedet for flat ring:** fronten er nå *identisk* som før (kort stiger opp midten, svinger sideveis, går ut av skjermen topp/bunn). Andre halvdel av syklusen er en **retur-bane** som kommer ned igjen lengre **bak** (`z = −520px`) og til **høyre** (`+17% av bredden`), dempet og blurret (5px). Banebyttene skjer utenfor skjermkanten der kortene har fadet ut (vertikal fade `0.32→0.6·vh`). Front-bane over retur-bane i stabling.
+
 ### Fase 0 — Oppsett
 
 ### Gjort

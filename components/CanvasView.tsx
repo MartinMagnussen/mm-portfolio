@@ -13,9 +13,11 @@ const PATH_X_DEG = 3.2; // idle pitch of the whole path
 const PATH_Z_DEG = 3.6; // idle roll of the whole path
 const PATH_SPEED = 0.00012; // path drift speed (per ms) — slow, scroll-independent
 const SCROLL_SPIN = 90; // scroll velocity → a touch of extra path roll
-const RING_Z = 240; // how far the far (top) arc of the ring recedes, px
-const BACK_BLUR = 4; // px blur on the receding far arc
-const BACK_FADE = 0.5; // opacity as a card rounds to the far side
+const SWINGS = 1.25; // horizontal swings per vertical pass (as before)
+const BACK_DEPTH = 520; // px the return lane sits behind the front lane
+const BACK_SHIFT = 0.17; // return lane offset to the right (× viewport width)
+const BACK_BLUR = 5; // px blur on the receding return lane
+const BACK_FADE = 0.55; // opacity of the return lane
 const MAG_REACH = 1.25; // magnetic radius as a multiple of the card half-size
 const MAG_PULL = 0.18; // how far an engaged card drifts toward the cursor (subtle)
 const MAG_EASE = 0.06; // how quickly it eases toward that offset (lower = slower)
@@ -66,9 +68,11 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
     function render(_time: number, deltaTime: number) {
       const vh = window.innerHeight;
       const vw = window.innerWidth;
-      // Ellipse radii: the ring's width and height on screen.
-      const ampX = Math.min(vw * 0.3, 380);
-      const ampY = Math.min(vh * 0.36, 340);
+      const ampX = Math.min(vw * 0.27, 360); // horizontal swing of the front lane
+      const yExtent = vh * 0.82; // cards travel well past the top/bottom edges
+      const fadeStart = vh * 0.32; // fully visible within here…
+      const fadeEnd = vh * 0.6; // …gone by here (so lane swaps hide off-screen)
+      const backX = vw * BACK_SHIFT; // how far right the return lane sits
 
       // Rects reflect last frame's transforms — close enough for proximity, and
       // reading them all up front avoids interleaved read/write layout thrash.
@@ -136,52 +140,63 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
       }
 
       let frontI = 0;
-      let frontMax = -Infinity;
+      let frontBest = -Infinity;
 
       for (let i = 0; i < n; i++) {
         const u = wrap(i / n + current);
-        const angle = u * TWO_PI; // one seamless loop around the ring
 
-        // A ring drawn in the screen plane: cards rise on the LEFT and come
-        // back DOWN on the RIGHT. The top arc tips away into the distance, so
-        // it's the only part that shrinks, dims and softly blurs.
-        const sinA = Math.sin(angle);
-        const cosA = Math.cos(angle); // +1 bottom (near) → −1 top (far)
-        const x = -sinA * ampX; // bottom→left(up)→top→right(down)
-        const y = cosA * ampY;
-        const far = (1 - cosA) / 2; // 0 at the near bottom → 1 at the far top
-        const z = -far * RING_Z;
+        // A conveyor loop seen edge-on. First half of the cycle is the FRONT
+        // lane — exactly as before: cards rise up the middle, swinging side to
+        // side, off the top. Second half is the RETURN lane: they come back
+        // DOWN set further back and to the right. The hand-offs between lanes
+        // happen past the top/bottom edges, where cards have faded out.
+        const front = u < 0.5;
+        const lp = front ? u / 0.5 : (u - 0.5) / 0.5; // 0→1 along the lane
+        const swing = Math.sin(lp * TWO_PI * SWINGS);
 
-        // Front-most (lowest, nearest) card drives the background image.
-        if (cosA > frontMax) {
-          frontMax = cosA;
+        // Front rises bottom→top; return falls top→bottom.
+        const y = front
+          ? lerp(yExtent, -yExtent, lp)
+          : lerp(-yExtent, yExtent, lp);
+        const x = front ? swing * ampX : backX + swing * ampX * 0.7;
+        const z = front ? 0 : -BACK_DEPTH;
+
+        // Fade by vertical position so cards melt away before the screen edge
+        // (which also hides the off-screen lane swap).
+        const ay = Math.abs(y);
+        const vis = Math.max(
+          0,
+          Math.min(1, 1 - (ay - fadeStart) / (fadeEnd - fadeStart)),
+        );
+        // Biggest through the middle height, just like before.
+        const midV = Math.max(0, 1 - ay / (vh * 0.5));
+
+        // Pick the most prominent front card to drive the backdrop image.
+        if (front && vis * midV > frontBest) {
+          frontBest = vis * midV;
           frontI = i;
         }
 
         const r = reveal[i].v;
-        // Biggest as cards sweep through the middle height; a touch smaller at
-        // the very top/bottom, and smaller still on the receding far arc.
-        const mid = 1 - Math.abs(cosA); // 1 at mid-height sides → 0 top/bottom
-        const scale = lerp(0.64, 1.12, mid) * lerp(1, 0.82, far) * lerp(0.86, 1, r);
-        const ry = -(x / ampX) * 20;
+        const scale =
+          lerp(0.55, 1.06, midV) * (front ? 1 : 0.82) * lerp(0.86, 1, r);
+        const ry = -swing * 24;
         const sway = reduced ? 0 : Math.sin(swayT * SWAY_SPEED + i * 1.7) * SWAY_DEG;
-        const rz = (x / ampX) * 4 + sway;
-        const opacity = lerp(1, BACK_FADE, far) * r;
+        const rz = swing * 4 + sway;
+        const opacity = vis * (front ? 1 : BACK_FADE) * r;
         opacities[i] = opacity;
 
         const isEng = i === engaged;
-        const blur = isEng ? 0 : far * BACK_BLUR;
+        const blur = isEng || front ? 0 : BACK_BLUR;
 
         const el = cards[i];
         el.style.transform = `translate(-50%, -50%) translate3d(${x + mag[i].x}px, ${y + mag[i].y}px, ${z}px) rotateY(${ry}deg) rotateZ(${rz}deg) scale(${scale})`;
         el.style.opacity = `${Math.max(opacity, 0)}`;
         el.style.filter = blur > 0.05 ? `blur(${blur.toFixed(2)}px)` : "none";
-        // Near (bottom) cards stack over the receding top of the ring; the
-        // engaged card is lifted clear of everything else.
-        el.style.zIndex = isEng ? "9999" : `${Math.round(1000 + z)}`;
+        // Front lane sits over the return lane; engaged card clears everything.
+        el.style.zIndex = isEng ? "9999" : front ? "1000" : "400";
         el.dataset.engaged = isEng ? "true" : "false";
-        // Any reasonably visible card stays interactive; only near-invisible
-        // far cards drop out so they can't steal hovers/clicks.
+        // Only near-invisible cards drop out so they can't steal hovers/clicks.
         el.style.pointerEvents = opacity > 0.12 ? "auto" : "none";
       }
 
