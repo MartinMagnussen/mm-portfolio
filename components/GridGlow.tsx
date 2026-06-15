@@ -6,10 +6,10 @@ import styles from "./GridGlow.module.css";
 // Cell size matches the CSS `--grid` token so this lines up with the rest of
 // the layout. Everything else is tuned for a subtle, tasteful glow.
 const GRID = 32; // cell size in px (keep in sync with --grid)
-const RADIUS = 6.8; // glow reach, in cells (≈ same px reach as the 64px grid)
+const RADIUS = 4; // glow reach, in cells (smaller, tighter spotlight)
 const MAX_ALPHA = 0.2; // brightest (cursor) cell fill
 const LINE_ALPHA = 0.07; // static grid lines (matches --line)
-const EASE = 0.16; // how quickly the glow eases toward the cursor
+const EASE = 0.08; // how quickly the glow eases toward the cursor (low = a soft trailing delay)
 
 // A pixelated spotlight: each grid cell lights up by how close its *centre* is
 // to the cursor, so the falloff is quantised per square instead of smooth.
