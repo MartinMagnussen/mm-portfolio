@@ -17,7 +17,8 @@ const YEXTENT_FRAC = 0.82; // cards travel this far past centre, top & bottom (�
 const CARD_GAP_FRAC = 0.32; // target vertical gap between cards (× vh)
 const SWINGS = 1.25; // horizontal swings per vertical pass (as before)
 const BACK_DEPTH = 520; // px the return lane sits behind the front lane
-const BACK_SHIFT = 0.17; // return lane offset to the right (× viewport width)
+const BACK_SHIFT = 0.27; // return lane offset to the right (× viewport width)
+const BACK_SCALE = 0.58; // return lane cards are smaller than the front lane
 const BACK_BLUR = 5; // px blur on the receding return lane
 const BACK_FADE = 0.55; // opacity of the return lane
 const MAG_REACH = 1.25; // magnetic radius as a multiple of the card half-size
@@ -58,6 +59,7 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
     const ptr = { x: 0, y: 0, inside: false };
     const mag = cards.map(() => ({ x: 0, y: 0 })); // eased magnetic offset
     const opacities = cards.map(() => 0); // last frame's opacity per card
+    const backCard = cards.map(() => false); // last frame: is this on the return lane?
     const reveal = cards.map(() => ({ v: reduced ? 1 : 0 }));
 
     // Intro: cards bloom in with a slight stagger.
@@ -89,7 +91,7 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
       let engDy = 0;
       if (ptr.inside) {
         for (let i = 0; i < n; i++) {
-          if (opacities[i] <= 0.12) continue;
+          if (opacities[i] <= 0.12 || backCard[i]) continue;
           const rc = rects[i];
           const dx = ptr.x - (rc.left + rc.width / 2);
           const dy = ptr.y - (rc.top + rc.height / 2);
@@ -181,12 +183,13 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
 
         const r = reveal[i].v;
         const scale =
-          lerp(0.55, 1.06, midV) * (front ? 1 : 0.82) * lerp(0.86, 1, r);
+          lerp(0.55, 1.06, midV) * (front ? 1 : BACK_SCALE) * lerp(0.86, 1, r);
         const ry = -swing * 24;
         const sway = reduced ? 0 : Math.sin(swayT * SWAY_SPEED + i * 1.7) * SWAY_DEG;
         const rz = swing * 4 + sway;
         const opacity = vis * (front ? 1 : BACK_FADE) * r;
         opacities[i] = opacity;
+        backCard[i] = !front;
 
         const isEng = i === engaged;
         const blur = isEng || front ? 0 : BACK_BLUR;
@@ -198,8 +201,9 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
         // Front lane sits over the return lane; engaged card clears everything.
         el.style.zIndex = isEng ? "9999" : front ? "1000" : "400";
         el.dataset.engaged = isEng ? "true" : "false";
-        // Only near-invisible cards drop out so they can't steal hovers/clicks.
-        el.style.pointerEvents = opacity > 0.12 ? "auto" : "none";
+        // Only front-lane, visible cards stay interactive. Return-lane cards are
+        // purely decorative — never clickable or hoverable.
+        el.style.pointerEvents = front && opacity > 0.12 ? "auto" : "none";
       }
 
       // Blurred backdrop follows the front-most (nearest) card, or the engaged

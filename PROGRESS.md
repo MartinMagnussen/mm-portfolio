@@ -71,6 +71,9 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 ### Rettelser (runde 14, etter tilbakemelding)
 - **Fast avstand mellom kort + duplikater:** løkka fylles nå etter en *gitt avstand* (`CARD_GAP_FRAC = 0.32·vh`), ikke etter antall prosjekter. Antall slots = `prosjekter × kopier`, der `kopier` rundes fra ideelt antall (~10 slots) delt på prosjektantallet — alltid et helt multiplum, så hver kopi havner jevnt ut av fase (én på front-banen, dens duplikat på retur-banen). Med 5 prosjekter → 10 slots (2 kopier hver). Duplikat-kort er `aria-hidden` + `tabIndex −1` så skjermleser/tastatur kun ser originalene. Når det er nok prosjekter (≥ ideelt antall) brukes ingen duplikater.
 
+### Rettelser (runde 15, etter tilbakemelding)
+- **Retur-bane-kort (de som går motsatt vei nedover):** tre justeringer. (1) *Mindre* — egen `BACK_SCALE = 0.58` brukes nå i skala-formelen i stedet for den gamle 0.82. (2) *Ikke klikkbare/hoverbare* — `pointerEvents` settes kun `auto` for front-bane-kort; et `backCard[]`-flagg ekskluderer dem også fra magnet-/engasjement-løkka, så de kan verken klikkes eller løftes fram. (3) *Lengre til høyre* — `BACK_SHIFT` hevet fra 0.17 → 0.27 (× viewport-bredde).
+
 ### Fase 0 — Oppsett
 
 ### Gjort
