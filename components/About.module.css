@@ -48,23 +48,12 @@
 }
 
 /* ---- Contact ---- */
+/* No divider line: the grid is fixed to the viewport while this section
+   scrolls, so a rule here can't stay aligned to it. The generous top spacing
+   separates the contact block on its own. */
 .contact {
-  position: relative;
-  margin-top: clamp(64px, 12vh, 130px);
+  margin-top: clamp(80px, 16vh, 170px);
   padding-top: clamp(40px, 7vh, 72px);
-}
-
-/* Full-bleed divider that reads as part of the page grid rather than an inset
-   hairline: spans the whole viewport width and sits a touch thicker. */
-.contact::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100vw;
-  height: 2px;
-  background: var(--line-strong);
 }
 
 .contactHeading {

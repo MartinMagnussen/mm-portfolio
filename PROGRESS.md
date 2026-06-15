@@ -77,6 +77,9 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 ### Rettelser (runde 17, etter tilbakemelding)
 - **Mykt/dempet scroll for desktop (treghet):** musehjul mater nå en hastighet som blør inn i målet og decay-er, så transportbåndet glir mykt til ro i stedet for å hakke. `WHEEL_IMPULSE = 1 − friction` gjør at total scroll-distanse er uendret — kun jevnere. Touch (mobil/iPad) skriver fortsatt målet direkte og er helt upåvirket. `prefers-reduced-motion` hopper over tregheten. (Valgte lett egenutviklet treghet framfor GSAP ScrollSmoother, som er en betalt Club-plugin og uansett er laget for ekte side-scroll, ikke dette faste lerretet.)
 
+### Fjernet skillelinje på om meg (runde 25)
+- Skillelinja mellom bio og kontakt lot seg ikke linje opp med rutenettet: rutenettet er festet til viewporten mens seksjonen scroller, så en linje i innholdet driver i forhold til rutenettet uansett scroll-posisjon. Etter Martins ønske fjernet (i stedet for å la den stå skjevt). Litt mer luft over kontakt-seksjonen kompenserer for separasjonen.
+
 ### Fiks: doble grid-linjer på arbeid/om meg (runde 24)
 - **Årsak:** rutenettet ble tegnet to ulike steder — forsiden viste det skarpe canvas-rutenettet (linjer rundet til hel piksel + 0.5), mens liste/om meg viste kroppens CSS-gradient-rutenett. CSS-gradienten kan ikke piksel-snappe, så hver 1px-linje anti-aliaset over to rader og så dobbel/uskarp ut.
 - **Løsning:** `GridGlow` tegner nå de skarpe linjene i *begge* moduser, og CSS-rutenettet på `body` (`background-image`/`-size`/`-position`/`-attachment`) er fjernet. Alle sider viser dermed nøyaktig samme piksel-snappede rutenett (forsidens spiral ligger på ugjennomsiktig bakgrunn og legger sitt eget identiske rutenett oppå). Fikset også en latent bug: `resize` tegner nå rutenettet på nytt (canvas tømmes ved resize, så de statiske linjene forsvant til neste pekerbevegelse mens loopen var i ro).
