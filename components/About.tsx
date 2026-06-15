@@ -4,8 +4,10 @@ import styles from "./About.module.css";
 
 // Contact details live here so they're trivial to update. Links only render
 // when filled in, so the contact block never shows half-empty placeholders.
-const EMAIL = "";
-const SOCIALS: { label: string; href: string }[] = [];
+const EMAIL = "martin.magnussen@outlook.com";
+const SOCIALS: { label: string; href: string }[] = [
+  { label: "linkedin", href: "https://www.linkedin.com/in/martin-b-magnussen" },
+];
 
 export default function About() {
   return (
