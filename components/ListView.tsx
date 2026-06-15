@@ -9,13 +9,15 @@ export default function ListView({ projects }: { projects: Project[] }) {
   const [tilt, setTilt] = useState(0);
   const previewRef = useRef<HTMLDivElement>(null);
 
-  // Lean the preview to a random side, 10–35° either way — but only re-roll
-  // when we actually land on a new row, so it leans once per card (not on
-  // every pointer move within the same row).
+  // Lean the preview a little, re-rolled only when we land on a new row. Each
+  // step moves at most 15° from the current lean and stays within ±20°, so it
+  // wanders gently and never snaps from one extreme to the other.
   function show(i: number) {
     if (active === i) return;
-    const mag = 10 + Math.random() * 25;
-    setTilt(Math.random() < 0.5 ? -mag : mag);
+    setTilt((prev) => {
+      const step = (Math.random() * 2 - 1) * 15;
+      return Math.max(-20, Math.min(20, prev + step));
+    });
     setActive(i);
   }
 

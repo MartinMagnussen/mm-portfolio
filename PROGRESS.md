@@ -36,6 +36,14 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 - **Stabil stabling (z-index):** dybde + z-index settes per kort i et fast vev `1,2,3,2,…` (uavhengig av skjermposisjon), nabokort deler aldri lag. Et kort som ligger bak et annet blir liggende bak.
 - **Ekte placeholder-bilder:** lagt inn 5 nedlastede bilder i `public/projects/` (fra-sofa-til-sporty, sporty-rebrand, eide-bruktbil, sbg-helene, gt-challenge). Fjernet alle «Konsept X»-placeholdere. Kort og liste-preview viser nå bildene (gradient beholdt som fallback).
 
+### Rettelser (runde 6, etter tilbakemelding)
+- **Ingen cropping:** kort (spiral + liste-preview) er nå 16:9 som kildebildene, så hele bildet vises.
+- **Hover på alle kort:** engasjement bestemmes av nærhet til kortets *senter* (ikke piksel under peker), og det aktive kortet løftes foran alt annet — delvis skjulte kort svarer nå.
+- **Liste-len dempet:** maks ±20°, og maks 15° endring per bytte (kan ikke hoppe fra 20 til −20); vandrer rolig fra 0.
+- **Blurry bakgrunn:** uskarp, dempet versjon av senter-/aktivt kortbilde dekker bakgrunnen, bak rutenettet (egen grid-layer over wash-en).
+- **Scroll påvirker rotasjon:** scroll legger til en knapt merkbar rull på hele banen.
+- **Magnetiske kort:** kort trekkes mot musepekeren når den er innenfor en omkrets — sterkest nær senter, null lenger unna; kortet følger pekeren mens man beveger den.
+
 ### Fase 0 — Oppsett
 
 ### Gjort

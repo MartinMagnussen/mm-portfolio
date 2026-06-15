@@ -5,11 +5,41 @@
   perspective: 1400px;
   touch-action: none;
   cursor: default;
+  /* Opaque base so the body's grid behind it doesn't double up. */
+  background: var(--bg);
+}
+
+/* Blurred wash of the centre card's image, sitting low and dim. */
+.bg {
+  position: absolute;
+  inset: -8%;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(70px) saturate(1.25);
+  opacity: 0.28;
+  transform: scale(1.1);
+  transition: background-image 0.6s var(--ease);
+  pointer-events: none;
+}
+
+/* The grid sits above the wash, below the cards. */
+.grid {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: var(--grid) var(--grid);
+  background-position: center;
 }
 
 .field {
   position: absolute;
   inset: 0;
+  z-index: 2;
   transform-style: preserve-3d;
 }
 
@@ -34,14 +64,11 @@
   position: relative;
   border-radius: var(--card-radius);
   overflow: hidden;
-  aspect-ratio: 4 / 3;
+  /* Matches the 16:9 source imagery so nothing is cropped. */
+  aspect-ratio: 16 / 9;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
   transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease);
   outline-offset: 6px;
-}
-
-.cardPos[data-featured="true"] .card {
-  aspect-ratio: 16 / 10;
 }
 
 .thumb {
@@ -61,18 +88,18 @@
   transition: opacity 0.45s var(--ease);
 }
 
-.card:hover,
+.cardPos[data-engaged="true"] .card,
 .card:focus-visible {
   transform: scale(1.06);
   box-shadow: 0 40px 100px rgba(0, 0, 0, 0.62);
 }
 
-.card:hover .thumb,
+.cardPos[data-engaged="true"] .thumb,
 .card:focus-visible .thumb {
   transform: scale(1.08);
 }
 
-.card:hover::after,
+.cardPos[data-engaged="true"] .card::after,
 .card:focus-visible::after {
   opacity: 1;
 }
@@ -92,7 +119,7 @@
   transition: opacity 0.45s var(--ease), transform 0.45s var(--ease);
 }
 
-.card:hover .label,
+.cardPos[data-engaged="true"] .label,
 .card:focus-visible .label {
   opacity: 1;
   transform: translateY(0);

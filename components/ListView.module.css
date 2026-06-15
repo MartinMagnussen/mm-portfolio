@@ -69,8 +69,8 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 240px;
-  aspect-ratio: 4 / 3;
+  width: 280px;
+  aspect-ratio: 16 / 9;
   background-size: cover;
   background-position: center;
   border-radius: var(--card-radius);
