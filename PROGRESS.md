@@ -2,7 +2,7 @@
 
 Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikler og designer.
 
-## Status: Fase 0 — Oppsett (pågår)
+## Status: Fase 0 — Oppsett ✅ FERDIG
 
 ### Gjort
 - Next.js 16 (App Router, TypeScript, ESLint) scaffoldet
@@ -10,11 +10,11 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 - GSAP + Lenis lagt til
 - UI UX Pro Max-skill installert i `.claude/skills/`
 - `.gitignore` justert (Python-cache fra skill)
+- GitHub: https://github.com/MartinMagnussen/mm-portfolio (offentlig)
+- Vercel: auto-deploy fra `main` → **https://mm-portfolio-zeta.vercel.app**
 
-### Gjenstår i Fase 0
-- Koble til GitHub-remote (`martin-portfolio`) — krever Martins innlogging
-- Sett opp Vercel (auto-deploy fra main) — krever Martins innlogging
-- (Senere) eget domene, f.eks. martinmagnussen.no
+### Senere
+- Eget domene (martinmagnussen.no) — kobles på slutten via Vercel → Settings → Domains
 
 ## Designbeslutninger (godkjent)
 - **Estetikk:** near-black canvas (~#0A0A0B), off-white tekst, svakt rutenett. Farge fra prosjekt-thumbnails, nøytralt UI.
@@ -33,7 +33,7 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 4. **Polish** — ytelse, a11y, responsivt, SEO/OG, pre-delivery-sjekkliste
 
 ## Neste steg
-Vente på Martins GitHub-innlogging → koble remote → Vercel. Så Fase 1 (forside).
+Fase 1 — forside: canvas (CSS 3D + GSAP) + liste-visning med toggle + menu-overlay, med placeholder-kort. Stopp for godkjenning.
 
 ## Filstrategi
 - Inspo-materiale: midlertidig, utenfor repo, slettes etter designgodkjenning (allerede godkjent — kan slettes).
