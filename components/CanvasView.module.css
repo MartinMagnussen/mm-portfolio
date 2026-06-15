@@ -22,11 +22,11 @@
 }
 
 .cardPos[data-featured="true"] {
-  --w: 420px;
+  --w: 500px;
 }
 
 .cardPos:not([data-featured="true"]) {
-  --w: 300px;
+  --w: 370px;
 }
 
 .card {
@@ -125,9 +125,9 @@
 
 @media (max-width: 768px) {
   .cardPos[data-featured="true"] {
-    --w: 300px;
+    --w: 330px;
   }
   .cardPos:not([data-featured="true"]) {
-    --w: 230px;
+    --w: 260px;
   }
 }

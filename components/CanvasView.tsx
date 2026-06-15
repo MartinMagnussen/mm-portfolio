@@ -8,7 +8,9 @@ import styles from "./CanvasView.module.css";
 const TWO_PI = Math.PI * 2;
 const WAVES = 1.25; // horizontal swings across the visible band
 const SPREAD = 1.55; // vertical travel as a multiple of viewport height
-const AUTO = 0.00014; // gentle idle drift (loops/frame)
+const AUTO = 0.00004; // very slow idle drift (loops/frame)
+const SWAY_DEG = 2.6; // gentle side-to-side rock amplitude
+const SWAY_SPEED = 0.0011; // rock speed (per ms)
 
 export default function CanvasView({ projects }: { projects: Project[] }) {
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -31,6 +33,8 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
 
     let target = 0; // user-driven offset (loops)
     let current = 0; // smoothed offset
+    let swayT = 0; // sway clock (ms), frozen while a card is hovered
+    let hovering = false; // pause all motion while inspecting a card
     const reveal = cards.map(() => ({ v: reduced ? 1 : 0 }));
 
     // Intro: cards bloom in with a slight stagger.
@@ -40,13 +44,17 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
       );
     }
 
-    function render() {
+    function render(_time: number, deltaTime: number) {
       const vh = window.innerHeight;
       const vw = window.innerWidth;
       const amp = Math.min(vw * 0.27, 360);
 
-      if (!reduced) target += AUTO;
-      current += (target - current) * 0.09;
+      const moving = !hovering && !reduced;
+      if (moving) {
+        target += AUTO;
+        swayT += deltaTime;
+      }
+      if (!hovering) current += (target - current) * 0.09;
 
       for (let i = 0; i < n; i++) {
         const u = wrap(i / n + current);
@@ -60,17 +68,27 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
         const r = reveal[i].v;
         const scale = lerp(1.04, 0.52, dist) * lerp(0.86, 1, r);
         const ry = -(x / amp) * 26;
-        const rz = (x / amp) * 4;
+        const sway = reduced ? 0 : Math.sin(swayT * SWAY_SPEED + i * 1.7) * SWAY_DEG;
+        const rz = (x / amp) * 4 + sway;
         const opacity = Math.min(Math.sin(u * Math.PI) * 1.6, 1) * r;
 
         const el = cards[i];
         el.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${y}px, ${z}px) rotateY(${ry}deg) rotateZ(${rz}deg) scale(${scale})`;
         el.style.opacity = `${Math.max(opacity, 0)}`;
         el.style.zIndex = `${Math.round((1 - dist) * 100)}`;
+        // Faded cards must not intercept clicks meant for the visible ones.
+        el.style.pointerEvents = opacity > 0.4 ? "auto" : "none";
       }
     }
 
     gsap.ticker.add(render);
+
+    const onEnter = () => (hovering = true);
+    const onLeave = () => (hovering = false);
+    cards.forEach((el) => {
+      el.addEventListener("pointerenter", onEnter);
+      el.addEventListener("pointerleave", onLeave);
+    });
 
     const SENS = 0.00058;
     function onWheel(e: WheelEvent) {
@@ -98,6 +116,10 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
       viewport.removeEventListener("wheel", onWheel);
       viewport.removeEventListener("touchstart", onTouchStart);
       viewport.removeEventListener("touchmove", onTouchMove);
+      cards.forEach((el) => {
+        el.removeEventListener("pointerenter", onEnter);
+        el.removeEventListener("pointerleave", onLeave);
+      });
     };
   }, [projects.length]);
 

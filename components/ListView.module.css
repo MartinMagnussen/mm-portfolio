@@ -83,6 +83,25 @@
 .preview[data-show="true"] {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
+  animation: rock 4.5s var(--ease) infinite;
+}
+
+/* gentle side-to-side rock, a few degrees */
+@keyframes rock {
+  0%,
+  100% {
+    rotate: -2.6deg;
+  }
+  50% {
+    rotate: 2.6deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preview[data-show="true"] {
+    animation: none;
+    rotate: 0deg;
+  }
 }
 
 @media (hover: none), (max-width: 768px) {
