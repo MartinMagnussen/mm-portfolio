@@ -90,11 +90,11 @@
   /* --px/--py are the magnetic offset toward the cursor (set in JS). */
   transform: translate(-50%, -50%) translate(var(--px, 0px), var(--py, 0px))
     scale(0.92);
-  /* --tilt is driven per-frame from horizontal cursor velocity (set in JS),
-     so it's deliberately left out of the transition below — easing here would
-     fight the rAF and smear the lean. */
+  /* --tilt is set in JS from the cursor's horizontal position over the row; a
+     short transition smooths the lean as the value retargets each mousemove. */
   rotate: var(--tilt, 0deg);
-  transition: opacity 0.4s var(--ease), transform 0.3s var(--ease);
+  transition: opacity 0.4s var(--ease), transform 0.3s var(--ease),
+    rotate 0.3s var(--ease);
   box-shadow: 0 40px 110px rgba(0, 0, 0, 0.6);
 }
 

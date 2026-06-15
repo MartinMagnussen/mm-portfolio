@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { projectHref, type Project } from "@/lib/projects";
 import styles from "./ListView.module.css";
 
@@ -8,11 +8,22 @@ import styles from "./ListView.module.css";
 // on. Small, so it stays a magnet hugging the line rather than chasing far off.
 const PULL = 0.2;
 
-// Horizontal cursor velocity leans the preview: each pixel of sideways travel
-// adds this many degrees, capped low so the lean stays a subtle suggestion.
-const TILT_PER_PX = 0.45;
-const MAX_TILT = 7; // degrees
-const TILT_DECAY = 0.86; // per frame: how quickly the lean rights itself
+// The lean the card lands with the moment you hover a row — a small base tilt
+// to one side, re-rolled per row. Kept under the ~5–10° ceiling.
+const BASE_MIN = 3; // degrees
+const BASE_MAX = 7; // degrees
+// On top of the base, the card leans further the more the cursor sits to one
+// side of the row centre. At RANGE px off-centre it has swung the full SWING;
+// the total is clamped to MAX_TILT so it never tips too far.
+const RANGE = 460; // px off-centre that maps to a full swing
+const SWING = 8; // degrees added at the edge of RANGE
+const MAX_TILT = 12; // degrees, hard cap on the combined lean
+
+// A fresh base lean to one (random) side, magnitude within [BASE_MIN, BASE_MAX].
+function rollBase() {
+  const mag = BASE_MIN + Math.random() * (BASE_MAX - BASE_MIN);
+  return Math.random() < 0.5 ? -mag : mag;
+}
 
 export default function ListView({ projects }: { projects: Project[] }) {
   const [active, setActive] = useState<number | null>(null);
@@ -20,35 +31,40 @@ export default function ListView({ projects }: { projects: Project[] }) {
   // Centre of the hovered row — the preview is anchored here and nudges toward
   // the cursor from this point.
   const anchor = useRef({ x: 0, y: 0 });
+  // Base lean for the current row; horizontal cursor position adds to it.
+  const base = useRef(0);
 
-  // Velocity-driven lean. Horizontal cursor movement feeds `tilt`, and a rAF
-  // eases it back toward flat so the card rights itself once the cursor rests.
-  const tilt = useRef(0);
-  const lastX = useRef<number | null>(null);
-
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let raf = 0;
-    function frame() {
-      tilt.current *= TILT_DECAY;
-      if (Math.abs(tilt.current) < 0.01) tilt.current = 0;
-      const el = previewRef.current;
-      if (el) el.style.setProperty("--tilt", `${tilt.current.toFixed(2)}deg`);
-      raf = requestAnimationFrame(frame);
-    }
-    raf = requestAnimationFrame(frame);
-    return () => cancelAnimationFrame(raf);
-  }, []);
+  // Lean = base + a share of SWING proportional to how far (as a %) the cursor
+  // sits from the row centre toward RANGE. Purely positional, so the card holds
+  // its angle while the cursor rests instead of springing back to flat.
+  function applyTilt(clientX: number) {
+    const el = previewRef.current;
+    if (!el) return;
+    const frac = Math.max(-1, Math.min(1, (clientX - anchor.current.x) / RANGE));
+    const tilt = Math.max(
+      -MAX_TILT,
+      Math.min(MAX_TILT, base.current + frac * SWING),
+    );
+    el.style.setProperty("--tilt", `${tilt.toFixed(2)}deg`);
+  }
 
   function show(i: number, el: HTMLElement) {
     const r = el.getBoundingClientRect();
     anchor.current = { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    if (active === i) return;
+    // New row → roll a fresh base lean, then show it immediately so the card
+    // arrives already tilted.
+    base.current = rollBase();
+    previewRef.current?.style.setProperty(
+      "--tilt",
+      `${base.current.toFixed(2)}deg`,
+    );
     setActive(i);
   }
 
   // Pin the card to the active row, then offset it toward the cursor: pointer
   // up-right of the text → card sits up-right; down-left → down-left. The
-  // horizontal delta since the last move also feeds the velocity-driven lean.
+  // horizontal cursor position also sets the lean.
   function move(e: React.MouseEvent) {
     const el = previewRef.current;
     if (!el) return;
@@ -57,15 +73,7 @@ export default function ListView({ projects }: { projects: Project[] }) {
     el.style.top = `${a.y}px`;
     el.style.setProperty("--px", `${(e.clientX - a.x) * PULL}px`);
     el.style.setProperty("--py", `${(e.clientY - a.y) * PULL}px`);
-
-    if (lastX.current !== null) {
-      const dx = e.clientX - lastX.current;
-      tilt.current = Math.max(
-        -MAX_TILT,
-        Math.min(MAX_TILT, tilt.current + dx * TILT_PER_PX),
-      );
-    }
-    lastX.current = e.clientX;
+    applyTilt(e.clientX);
   }
 
   return (
