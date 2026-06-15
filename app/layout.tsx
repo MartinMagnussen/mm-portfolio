@@ -61,8 +61,8 @@ export default function RootLayout({
       className={`${display.variable} ${body.variable} ${mono.variable}`}
     >
       <body>
-        {/* Page-wide cursor glow over the body grid (list + about pages); the
-            spiral view layers its own line grid on top of an opaque backdrop. */}
+        {/* Page-wide grid + cursor glow for every page; the spiral view sits on
+            an opaque backdrop and layers its own identical grid on top. */}
         <GridGlow asBackground />
         {/* Persistent nav so the indicator animates across route changes.
             Reads the URL via useSearchParams, hence the Suspense boundary. */}

@@ -63,26 +63,25 @@ export default function GridGlow({
     function draw() {
       ctx!.clearRect(0, 0, vw, vh);
 
-      // Static grid lines. +0.5 keeps the 1px strokes crisp. Skipped in
-      // background mode, where the body's CSS grid supplies the lines.
-      if (!asBackground) {
-        ctx!.strokeStyle = `rgba(255, 255, 255, ${LINE_ALPHA})`;
-        ctx!.lineWidth = 1;
-        ctx!.beginPath();
-        const kxMax = Math.ceil(vw / 2 / GRID);
-        const kyMax = Math.ceil(vh / 2 / GRID);
-        for (let k = -kxMax; k <= kxMax; k++) {
-          const x = Math.round(lineX(k)) + 0.5;
-          ctx!.moveTo(x, 0);
-          ctx!.lineTo(x, vh);
-        }
-        for (let k = -kyMax; k <= kyMax; k++) {
-          const y = Math.round(lineY(k)) + 0.5;
-          ctx!.moveTo(0, y);
-          ctx!.lineTo(vw, y);
-        }
-        ctx!.stroke();
+      // Static grid lines, drawn in both modes so every page shows the exact
+      // same pixel-snapped grid. +0.5 keeps the 1px strokes crisp (a CSS
+      // gradient grid can't pixel-snap and renders as doubled/blurry lines).
+      ctx!.strokeStyle = `rgba(255, 255, 255, ${LINE_ALPHA})`;
+      ctx!.lineWidth = 1;
+      ctx!.beginPath();
+      const kxMax = Math.ceil(vw / 2 / GRID);
+      const kyMax = Math.ceil(vh / 2 / GRID);
+      for (let k = -kxMax; k <= kxMax; k++) {
+        const x = Math.round(lineX(k)) + 0.5;
+        ctx!.moveTo(x, 0);
+        ctx!.lineTo(x, vh);
       }
+      for (let k = -kyMax; k <= kyMax; k++) {
+        const y = Math.round(lineY(k)) + 0.5;
+        ctx!.moveTo(0, y);
+        ctx!.lineTo(vw, y);
+      }
+      ctx!.stroke();
 
       // Lit cells around the cursor. Only the cells within the glow radius are
       // visited, so this stays cheap regardless of viewport size.
@@ -161,16 +160,23 @@ export default function GridGlow({
       start();
     }
 
+    // Resizing the canvas clears it, so redraw the static grid immediately —
+    // otherwise the lines vanish until the next pointer move (the loop is idle).
+    function onResize() {
+      resize();
+      draw();
+    }
+
     resize();
     draw();
-    window.addEventListener("resize", resize);
+    window.addEventListener("resize", onResize);
     window.addEventListener("pointermove", onMove, { passive: true });
     document.addEventListener("pointerleave", onLeave);
     window.addEventListener("blur", onLeave);
 
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener("resize", resize);
+      window.removeEventListener("resize", onResize);
       window.removeEventListener("pointermove", onMove);
       document.removeEventListener("pointerleave", onLeave);
       window.removeEventListener("blur", onLeave);

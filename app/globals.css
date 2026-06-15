@@ -41,14 +41,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
   min-height: 100dvh;
   overflow-x: hidden;
-  background-image:
-    linear-gradient(var(--line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--line) 1px, transparent 1px);
-  background-size: var(--grid) var(--grid);
-  background-position: center;
-  /* Pin the grid to the viewport so it stays aligned with the fixed cursor-glow
-     canvas even while the page scrolls. */
-  background-attachment: fixed;
+  /* The grid is painted by the GridGlow <canvas> (mounted in the layout) so the
+     lines are pixel-snapped and identical on every page — a CSS gradient grid
+     can't pixel-snap and rendered as doubled/blurry lines on scrolling pages. */
 }
 
 ::selection {
