@@ -24,6 +24,10 @@ const BACK_FADE = 0.55; // opacity of the return lane
 const MAG_REACH = 1.25; // magnetic radius as a multiple of the card half-size
 const MAG_PULL = 0.18; // how far an engaged card drifts toward the cursor (subtle)
 const MAG_EASE = 0.06; // how quickly it eases toward that offset (lower = slower)
+const EDGE_PAD = 14; // px breathing room so a front card never touches the edge
+const FRONT_PEAK_SCALE = 1.06; // the largest a front card grows through the middle
+const WHEEL_FRICTION = 0.85; // desktop scroll inertia: higher = longer glide
+const WHEEL_IMPULSE = 1 - WHEEL_FRICTION; // keeps total scroll distance unchanged
 
 export default function CanvasView({ projects }: { projects: Project[] }) {
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -48,6 +52,7 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
 
     let target = 0; // user-driven offset (loops)
     let current = 0; // smoothed offset
+    let wheelMomentum = 0; // desktop wheel inertia (loops/frame), decays each frame
     let swayT = 0; // sway clock (ms), frozen while a card is engaged
     let pathT = 0; // idle path-rotation clock (ms), frozen while engaged
     let hovering = false; // pause idle motion while inspecting a card
@@ -62,6 +67,16 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
     const backCard = cards.map(() => false); // last frame: is this on the return lane?
     const reveal = cards.map(() => ({ v: reduced ? 1 : 0 }));
 
+    // Widest card (the featured one) drives how far the front lane may swing
+    // without leaving the viewport. Measured once and on resize — offsetWidth is
+    // a layout read, so we keep it out of the per-frame render loop.
+    let maxCardW = 0;
+    const measureCards = () => {
+      maxCardW = cards.reduce((m, c) => Math.max(m, c.offsetWidth), 0);
+    };
+    measureCards();
+    window.addEventListener("resize", measureCards);
+
     // Intro: cards bloom in with a slight stagger.
     if (!reduced) {
       reveal.forEach((r, i) =>
@@ -72,7 +87,15 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
     function render(_time: number, deltaTime: number) {
       const vh = window.innerHeight;
       const vw = window.innerWidth;
-      const ampX = Math.min(vw * 0.27, 360); // horizontal swing of the front lane
+      // Cap the front-lane swing so the widest card stays fully on-screen even at
+      // its peak scale — on narrow phones this shrinks the swing toward zero so a
+      // highlighted card never spills off the side. (Back-lane cards intentionally
+      // drift further out and aren't constrained here.)
+      const ampCap = Math.max(
+        0,
+        vw / 2 - (maxCardW * FRONT_PEAK_SCALE) / 2 - EDGE_PAD,
+      );
+      const ampX = Math.min(vw * 0.27, 360, ampCap); // horizontal swing of the front lane
       const yExtent = vh * YEXTENT_FRAC; // cards travel well past the top/bottom edges
       const fadeStart = vh * 0.32; // fully visible within here…
       const fadeEnd = vh * 0.6; // …gone by here (so lane swaps hide off-screen)
@@ -131,6 +154,15 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
         target += AUTO;
         swayT += deltaTime;
         pathT += deltaTime;
+      }
+      // Desktop inertia: each wheel tick feeds a velocity that bleeds into the
+      // target and decays, so the conveyor glides to a smooth stop instead of
+      // snapping. Touch (mobile/iPad) writes `target` directly and never sets
+      // this, so it's unaffected.
+      if (wheelMomentum !== 0) {
+        target += wheelMomentum;
+        wheelMomentum *= WHEEL_FRICTION;
+        if (Math.abs(wheelMomentum) < 1e-7) wheelMomentum = 0;
       }
       const scrollVel = target - current;
       current += scrollVel * 0.09;
@@ -233,7 +265,14 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
     const SENS = 0.00058;
     function onWheel(e: WheelEvent) {
       e.preventDefault();
-      target += e.deltaY * SENS;
+      if (reduced) {
+        // Honour reduced-motion: drive the target directly, no inertial glide.
+        target += e.deltaY * SENS;
+      } else {
+        // Feed the inertia accumulator; WHEEL_IMPULSE keeps the total distance
+        // identical to a direct bump while spreading it over a smooth glide.
+        wheelMomentum += e.deltaY * SENS * WHEEL_IMPULSE;
+      }
     }
 
     let lastY = 0;
@@ -258,6 +297,7 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
       viewport.removeEventListener("wheel", onWheel);
       viewport.removeEventListener("touchstart", onTouchStart);
       viewport.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("resize", measureCards);
     };
   }, [projects]);
 
