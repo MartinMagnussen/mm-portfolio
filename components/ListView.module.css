@@ -1,4 +1,8 @@
 .wrap {
+  position: relative;
+  /* Scope mix-blend-mode to this section so the titles invert over the
+     preview image, not over whatever sits behind the whole page. */
+  isolation: isolate;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
@@ -9,6 +13,11 @@
 }
 
 .list {
+  position: relative;
+  z-index: 1;
+  /* Titles blend against the preview underneath them — over the image they
+     invert and stay legible; over the near-black backdrop they read light. */
+  mix-blend-mode: difference;
   list-style: none;
   display: flex;
   flex-direction: column;
@@ -66,28 +75,29 @@
 }
 
 .preview {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 280px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* A good deal larger and centred behind the titles. */
+  width: clamp(340px, 52vw, 720px);
   aspect-ratio: 16 / 9;
   background-size: cover;
   background-position: center;
   border-radius: var(--card-radius);
   pointer-events: none;
-  z-index: 5;
+  z-index: 0;
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.9);
+  transform: translate(-50%, -50%) scale(0.92);
   rotate: 0deg;
-  transition: opacity 0.25s var(--ease), transform 0.35s var(--ease),
+  transition: opacity 0.4s var(--ease), transform 0.5s var(--ease),
     rotate 0.5s var(--ease);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 40px 110px rgba(0, 0, 0, 0.6);
 }
 
 /* scale up a touch and lean to a random side (--tilt set per item) */
 .preview[data-show="true"] {
   opacity: 1;
-  transform: translate(-50%, -50%) scale(1.06);
+  transform: translate(-50%, -50%) scale(1);
   rotate: var(--tilt, 0deg);
 }
 
@@ -100,6 +110,10 @@
 @media (hover: none), (max-width: 768px) {
   .preview {
     display: none;
+  }
+  /* No image to invert over on touch/small screens — render titles plainly. */
+  .list {
+    mix-blend-mode: normal;
   }
   .link {
     color: var(--fg);

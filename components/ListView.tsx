@@ -1,13 +1,12 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import type { Project } from "@/lib/projects";
 import styles from "./ListView.module.css";
 
 export default function ListView({ projects }: { projects: Project[] }) {
   const [active, setActive] = useState<number | null>(null);
   const [tilt, setTilt] = useState(0);
-  const previewRef = useRef<HTMLDivElement>(null);
 
   // Lean the preview a little, re-rolled only when we land on a new row. Each
   // step moves at most 10° from the current lean and stays within ±10°, so it
@@ -21,16 +20,26 @@ export default function ListView({ projects }: { projects: Project[] }) {
     setActive(i);
   }
 
-  function move(e: React.MouseEvent) {
-    const el = previewRef.current;
-    if (!el) return;
-    el.style.left = `${e.clientX + 150}px`;
-    el.style.top = `${e.clientY}px`;
-  }
-
   return (
-    <section className={styles.wrap} id="arbeid" onMouseMove={move}>
+    <section className={styles.wrap} id="arbeid">
       <h1 className="visually-hidden">Arbeid</h1>
+
+      {/* Big preview sits centred behind the titles; the list text inverts
+          over it via mix-blend-mode so it stays readable on any image. */}
+      <div
+        className={styles.preview}
+        data-show={active !== null}
+        style={
+          {
+            backgroundColor: "#0a0a0b",
+            backgroundImage:
+              active !== null ? `url(${projects[active].image})` : undefined,
+            "--tilt": `${tilt}deg`,
+          } as React.CSSProperties
+        }
+        aria-hidden="true"
+      />
+
       <ul className={styles.list}>
         {projects.map((p, i) => (
           <li
@@ -52,21 +61,6 @@ export default function ListView({ projects }: { projects: Project[] }) {
           </li>
         ))}
       </ul>
-
-      <div
-        ref={previewRef}
-        className={styles.preview}
-        data-show={active !== null}
-        style={
-          {
-            backgroundColor: "#0a0a0b",
-            backgroundImage:
-              active !== null ? `url(${projects[active].image})` : undefined,
-            "--tilt": `${tilt}deg`,
-          } as React.CSSProperties
-        }
-        aria-hidden="true"
-      />
     </section>
   );
 }
