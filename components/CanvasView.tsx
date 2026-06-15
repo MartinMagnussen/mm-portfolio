@@ -13,6 +13,8 @@ const PATH_X_DEG = 3.2; // idle pitch of the whole path
 const PATH_Z_DEG = 3.6; // idle roll of the whole path
 const PATH_SPEED = 0.00012; // path drift speed (per ms) — slow, scroll-independent
 const SCROLL_SPIN = 90; // scroll velocity → a touch of extra path roll
+const YEXTENT_FRAC = 0.82; // cards travel this far past centre, top & bottom (× vh)
+const CARD_GAP_FRAC = 0.32; // target vertical gap between cards (× vh)
 const SWINGS = 1.25; // horizontal swings per vertical pass (as before)
 const BACK_DEPTH = 520; // px the return lane sits behind the front lane
 const BACK_SHIFT = 0.17; // return lane offset to the right (× viewport width)
@@ -69,7 +71,7 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
       const vh = window.innerHeight;
       const vw = window.innerWidth;
       const ampX = Math.min(vw * 0.27, 360); // horizontal swing of the front lane
-      const yExtent = vh * 0.82; // cards travel well past the top/bottom edges
+      const yExtent = vh * YEXTENT_FRAC; // cards travel well past the top/bottom edges
       const fadeStart = vh * 0.32; // fully visible within here…
       const fadeEnd = vh * 0.6; // …gone by here (so lane swaps hide off-screen)
       const backX = vw * BACK_SHIFT; // how far right the return lane sits
@@ -200,11 +202,13 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
         el.style.pointerEvents = opacity > 0.12 ? "auto" : "none";
       }
 
-      // Blurred backdrop follows the front-most (nearest) card, or the engaged one.
+      // Blurred backdrop follows the front-most (nearest) card, or the engaged
+      // one. showI is a slot index, so map it back to a project (slots may be
+      // duplicated to fill the loop).
       const showI = engaged !== -1 ? engaged : frontI;
       if (bg && showI !== bgIndex) {
         bgIndex = showI;
-        bg.style.backgroundImage = `url(${projects[showI].image})`;
+        bg.style.backgroundImage = `url(${projects[showI % projects.length].image})`;
       }
     }
 
@@ -252,26 +256,40 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
     };
   }, [projects]);
 
+  // Fill the loop at a fixed spacing. When there aren't enough projects we
+  // duplicate them so the gap between cards stays constant instead of
+  // stretching to the project count. Slots are kept a whole multiple of the
+  // project count, so each copy sits evenly out of phase (one on the front
+  // lane, its duplicate on the return lane).
+  const idealSlots = (4 * YEXTENT_FRAC) / CARD_GAP_FRAC;
+  const copies = Math.max(1, Math.round(idealSlots / projects.length));
+  const slots = Array.from({ length: projects.length * copies }, (_, i) => ({
+    project: projects[i % projects.length],
+    isDupe: i >= projects.length,
+  }));
+
   return (
     <div ref={viewportRef} className={styles.viewport}>
       <div ref={bgRef} className={styles.bg} aria-hidden="true" />
       <div className={styles.grid} aria-hidden="true" />
 
       <div ref={fieldRef} className={styles.field}>
-        {projects.map((p, i) => (
+        {slots.map(({ project: p, isDupe }, i) => (
           <div
-            key={p.slug}
+            key={i}
             ref={(el) => {
               cardsRef.current[i] = el;
             }}
             className={styles.cardPos}
             data-featured={p.featured}
             style={{ opacity: 0 }}
+            aria-hidden={isDupe || undefined}
           >
             <a
               href={`/prosjekt/${p.slug}`}
               className={styles.card}
               aria-label={`${p.title} — ${p.tag}, ${p.year}`}
+              tabIndex={isDupe ? -1 : undefined}
               onDragStart={(e) => e.preventDefault()}
             >
               <span

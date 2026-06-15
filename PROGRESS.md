@@ -68,6 +68,9 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 ### Rettelser (runde 13, etter tilbakemelding)
 - **Transportbånd-løkke i stedet for flat ring:** fronten er nå *identisk* som før (kort stiger opp midten, svinger sideveis, går ut av skjermen topp/bunn). Andre halvdel av syklusen er en **retur-bane** som kommer ned igjen lengre **bak** (`z = −520px`) og til **høyre** (`+17% av bredden`), dempet og blurret (5px). Banebyttene skjer utenfor skjermkanten der kortene har fadet ut (vertikal fade `0.32→0.6·vh`). Front-bane over retur-bane i stabling.
 
+### Rettelser (runde 14, etter tilbakemelding)
+- **Fast avstand mellom kort + duplikater:** løkka fylles nå etter en *gitt avstand* (`CARD_GAP_FRAC = 0.32·vh`), ikke etter antall prosjekter. Antall slots = `prosjekter × kopier`, der `kopier` rundes fra ideelt antall (~10 slots) delt på prosjektantallet — alltid et helt multiplum, så hver kopi havner jevnt ut av fase (én på front-banen, dens duplikat på retur-banen). Med 5 prosjekter → 10 slots (2 kopier hver). Duplikat-kort er `aria-hidden` + `tabIndex −1` så skjermleser/tastatur kun ser originalene. Når det er nok prosjekter (≥ ideelt antall) brukes ingen duplikater.
+
 ### Fase 0 — Oppsett
 
 ### Gjort
