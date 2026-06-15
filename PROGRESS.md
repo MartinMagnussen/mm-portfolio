@@ -47,6 +47,10 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 ### Rettelser (runde 7, etter tilbakemelding)
 - **Liste-preview mye større og bak teksten:** preview-kortet er nå sentrert bak titlene (`clamp(340px, 52vw, 720px)`, 16:9), ikke lenger et lite kort som følger cursoren. Teksten ligger over bildet med `mix-blend-mode: difference` (scopet via `isolation: isolate` på seksjonen), så titlene inverterer over bildet og holder seg lesbare — og leser lyst mot den nær-svarte bakgrunnen ellers. Behold ±10°-len og myk inn-/ut-toning. På touch/≤768px (ingen preview) settes blend tilbake til normal.
 
+### Rettelser (runde 8, etter tilbakemelding)
+- **Glass-bobler på spiral/liste-toggle:** toggle-gruppen er nå en glass-pille (backdrop-blur + saturate, svak hvit kant, inset-highlight, dyp skygge) så etikettene er lesbare over både spiral og liste. Aktiv etikett får en egen glass-lozenge. Meny-knappen oppgradert til samme glass-look. (Ekte refraksjon/displacement er ikke pålitelig støttet i CSS på tvers av nettlesere — brukte derfor polert glassmorfisme.)
+- **Liste-preview enda større:** `clamp(440px, 68vw, 960px)` så kortet dekker hele titlene. Teksten ligger foran kortet og inverterer via `mix-blend-mode: difference` for lesbarhet ved lav kontrast.
+
 ### Fase 0 — Oppsett
 
 ### Gjort

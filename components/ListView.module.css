@@ -78,8 +78,8 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  /* A good deal larger and centred behind the titles. */
-  width: clamp(340px, 52vw, 720px);
+  /* Big — large enough to sit behind the whole stack of titles. */
+  width: clamp(440px, 68vw, 960px);
   aspect-ratio: 16 / 9;
   background-size: cover;
   background-position: center;
