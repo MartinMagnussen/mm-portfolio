@@ -6,7 +6,15 @@ import styles from "./ListView.module.css";
 
 export default function ListView({ projects }: { projects: Project[] }) {
   const [active, setActive] = useState<number | null>(null);
+  const [tilt, setTilt] = useState(0);
   const previewRef = useRef<HTMLDivElement>(null);
+
+  // Lean the preview to a random side, 10–35° either way.
+  function show(i: number) {
+    const mag = 10 + Math.random() * 25;
+    setTilt(Math.random() < 0.5 ? -mag : mag);
+    setActive(i);
+  }
 
   function move(e: React.MouseEvent) {
     const el = previewRef.current;
@@ -24,13 +32,13 @@ export default function ListView({ projects }: { projects: Project[] }) {
             key={p.slug}
             className={styles.item}
             data-active={active === i}
-            onMouseEnter={() => setActive(i)}
+            onMouseEnter={() => show(i)}
             onMouseLeave={() => setActive(null)}
           >
             <a
               href={`/prosjekt/${p.slug}`}
               className={styles.link}
-              onFocus={() => setActive(i)}
+              onFocus={() => show(i)}
               onBlur={() => setActive(null)}
             >
               {p.title}
@@ -44,9 +52,12 @@ export default function ListView({ projects }: { projects: Project[] }) {
         ref={previewRef}
         className={styles.preview}
         data-show={active !== null}
-        style={{
-          background: active !== null ? projects[active].gradient : undefined,
-        }}
+        style={
+          {
+            background: active !== null ? projects[active].gradient : undefined,
+            "--tilt": `${tilt}deg`,
+          } as React.CSSProperties
+        }
         aria-hidden="true"
       />
     </section>

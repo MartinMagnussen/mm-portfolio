@@ -21,6 +21,10 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 - Hint: "dra for å utforske" → "skroll for å utforske".
 - Lagt til introanimasjon og tydeligere hover på både kort og liste.
 
+### Rettelser (runde 3, etter tilbakemelding)
+- Spiral: tregere idle-drift, mild side-til-side sway, full frys ved hover, fikset klikkbarhet (pointer-events), større kort.
+- **Liste-preview:** byttet ut mild rock-animasjon med at preview-kortet skalerer litt opp og _lener_ seg til en tilfeldig side ved hover — vinkel mellom −35…−10° eller 10…35° (settes per rad via `--tilt`).
+
 ### Fase 0 — Oppsett
 
 ### Gjort
