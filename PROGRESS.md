@@ -61,7 +61,9 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 
 ### Rettelser (runde 11, etter tilbakemelding)
 - **Tykkere display-font med mer personlighet:** byttet Space Grotesk → **Bricolage Grotesque** (vekter 500–800). Logo 800, liste-titler 700, kort-titler 700, strammere letter-spacing.
-- **Spiralen er nå en ring:** kortene svinger ikke bare sideveis (x) men også frem/bak (z = cos·amp·0.85), så banen wrapper rundt i en løkke. Baksiden runder bort i dybden — dempet (`opacity`-gulv 0.4) og mykt blurret (opptil 5px). Stabling settes nå etter ekte dybde (`z-index ≈ 1000 + z`), engasjert kort løftes til topp og fjerner blur.
+
+### Rettelser (runde 12, etter tilbakemelding)
+- **Ringen rettet opp:** forrige forsøk la dybden på feil akse — midtbåndet havnet bakerst (lite + blurry) og kortene snudde rundt. Nå er banen en ellipse i skjermplanet: kortene stiger på **venstre** side og kommer **ned igjen på høyre** (`x = −sin·ampX`, `y = cos·ampY`, én sømløs løkke). Størst når de sveiper gjennom midten (`scale` topper ved midthøyde), mindre øverst/nederst. Kun den **øvre buen** vipper bakover (`z = −far·240`), der den dempes og blurres lett (opptil 4px). Ingen opp-ned-vending. Stabling etter dybde; bakgrunnsbildet følger det fremste (nederste) kortet.
 
 ### Fase 0 — Oppsett
 

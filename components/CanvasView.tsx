@@ -6,8 +6,6 @@ import type { Project } from "@/lib/projects";
 import styles from "./CanvasView.module.css";
 
 const TWO_PI = Math.PI * 2;
-const WAVES = 1.25; // horizontal swings across the visible band
-const SPREAD = 1.55; // vertical travel as a multiple of viewport height
 const AUTO = 0.00004; // very slow idle drift (loops/frame)
 const SWAY_DEG = 2.6; // gentle side-to-side rock amplitude
 const SWAY_SPEED = 0.0011; // rock speed (per ms)
@@ -15,9 +13,9 @@ const PATH_X_DEG = 3.2; // idle pitch of the whole path
 const PATH_Z_DEG = 3.6; // idle roll of the whole path
 const PATH_SPEED = 0.00012; // path drift speed (per ms) — slow, scroll-independent
 const SCROLL_SPIN = 90; // scroll velocity → a touch of extra path roll
-const RING_DEPTH = 0.85; // ring depth (z) as a fraction of horizontal amplitude
-const BACK_BLUR = 5; // px blur on the far (back) side of the ring
-const BACK_FADE = 0.4; // opacity floor as a card rounds to the back
+const RING_Z = 240; // how far the far (top) arc of the ring recedes, px
+const BACK_BLUR = 4; // px blur on the receding far arc
+const BACK_FADE = 0.5; // opacity as a card rounds to the far side
 const MAG_REACH = 1.25; // magnetic radius as a multiple of the card half-size
 const MAG_PULL = 0.18; // how far an engaged card drifts toward the cursor (subtle)
 const MAG_EASE = 0.06; // how quickly it eases toward that offset (lower = slower)
@@ -68,7 +66,9 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
     function render(_time: number, deltaTime: number) {
       const vh = window.innerHeight;
       const vw = window.innerWidth;
-      const amp = Math.min(vw * 0.27, 360);
+      // Ellipse radii: the ring's width and height on screen.
+      const ampX = Math.min(vw * 0.3, 380);
+      const ampY = Math.min(vh * 0.36, 340);
 
       // Rects reflect last frame's transforms — close enough for proximity, and
       // reading them all up front avoids interleaved read/write layout thrash.
@@ -135,53 +135,58 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
         field.style.transform = `rotateX(${prx}deg) rotateZ(${prz + scrollVel * SCROLL_SPIN}deg)`;
       }
 
-      let centreI = 0;
-      let centreDist = Infinity;
+      let frontI = 0;
+      let frontMax = -Infinity;
 
       for (let i = 0; i < n; i++) {
         const u = wrap(i / n + current);
-        const angle = u * TWO_PI * WAVES;
+        const angle = u * TWO_PI; // one seamless loop around the ring
 
-        const dist = Math.abs(u - 0.5) * 2; // 0 centre band → 1 edges
-        if (dist < centreDist) {
-          centreDist = dist;
-          centreI = i;
+        // A ring drawn in the screen plane: cards rise on the LEFT and come
+        // back DOWN on the RIGHT. The top arc tips away into the distance, so
+        // it's the only part that shrinks, dims and softly blurs.
+        const sinA = Math.sin(angle);
+        const cosA = Math.cos(angle); // +1 bottom (near) → −1 top (far)
+        const x = -sinA * ampX; // bottom→left(up)→top→right(down)
+        const y = cosA * ampY;
+        const far = (1 - cosA) / 2; // 0 at the near bottom → 1 at the far top
+        const z = -far * RING_Z;
+
+        // Front-most (lowest, nearest) card drives the background image.
+        if (cosA > frontMax) {
+          frontMax = cosA;
+          frontI = i;
         }
-        // The path is now a ring: cards swing left↔right (x) AND front↔back (z),
-        // so the spiral wraps around in a loop. The far side rounds away into
-        // the distance, where it's dimmed and softly blurred.
-        const x = Math.sin(angle) * amp;
-        const z = Math.cos(angle) * amp * RING_DEPTH;
-        const y = (0.5 - u) * SPREAD * vh;
-        const front = (z / (amp * RING_DEPTH) + 1) / 2; // 1 = nearest, 0 = back
 
         const r = reveal[i].v;
-        const scale = lerp(1.04, 0.52, dist) * lerp(0.86, 1, r);
-        const ry = -(x / amp) * 26;
+        // Biggest as cards sweep through the middle height; a touch smaller at
+        // the very top/bottom, and smaller still on the receding far arc.
+        const mid = 1 - Math.abs(cosA); // 1 at mid-height sides → 0 top/bottom
+        const scale = lerp(0.64, 1.12, mid) * lerp(1, 0.82, far) * lerp(0.86, 1, r);
+        const ry = -(x / ampX) * 20;
         const sway = reduced ? 0 : Math.sin(swayT * SWAY_SPEED + i * 1.7) * SWAY_DEG;
-        const rz = (x / amp) * 4 + sway;
-        const opacity =
-          Math.min(Math.sin(u * Math.PI) * 1.6, 1) * lerp(BACK_FADE, 1, front) * r;
+        const rz = (x / ampX) * 4 + sway;
+        const opacity = lerp(1, BACK_FADE, far) * r;
         opacities[i] = opacity;
 
         const isEng = i === engaged;
-        const blur = isEng ? 0 : (1 - front) * BACK_BLUR;
+        const blur = isEng ? 0 : far * BACK_BLUR;
 
         const el = cards[i];
         el.style.transform = `translate(-50%, -50%) translate3d(${x + mag[i].x}px, ${y + mag[i].y}px, ${z}px) rotateY(${ry}deg) rotateZ(${rz}deg) scale(${scale})`;
         el.style.opacity = `${Math.max(opacity, 0)}`;
         el.style.filter = blur > 0.05 ? `blur(${blur.toFixed(2)}px)` : "none";
-        // Stack by real depth so the ring occludes correctly; the engaged card
-        // is lifted clear of everything else.
+        // Near (bottom) cards stack over the receding top of the ring; the
+        // engaged card is lifted clear of everything else.
         el.style.zIndex = isEng ? "9999" : `${Math.round(1000 + z)}`;
         el.dataset.engaged = isEng ? "true" : "false";
         // Any reasonably visible card stays interactive; only near-invisible
-        // edge/back cards drop out so they can't steal hovers/clicks.
+        // far cards drop out so they can't steal hovers/clicks.
         el.style.pointerEvents = opacity > 0.12 ? "auto" : "none";
       }
 
-      // Blurred backdrop follows the image nearest the centre of the band.
-      const showI = engaged !== -1 ? engaged : centreI;
+      // Blurred backdrop follows the front-most (nearest) card, or the engaged one.
+      const showI = engaged !== -1 ? engaged : frontI;
       if (bg && showI !== bgIndex) {
         bgIndex = showI;
         bg.style.backgroundImage = `url(${projects[showI].image})`;
