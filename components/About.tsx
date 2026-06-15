@@ -1,5 +1,15 @@
-import Image from "next/image";
+import PortraitDeck from "./PortraitDeck";
 import styles from "./About.module.css";
+
+// Placeholder deck: the same portrait repeated so the card-stack interaction is
+// visible. Swap these for distinct images later — order top → bottom.
+const PHOTOS = [
+  "/om/martin.webp",
+  "/om/martin.webp",
+  "/om/martin.webp",
+  "/om/martin.webp",
+  "/om/martin.webp",
+];
 
 // Contact details live here so they're trivial to update. Email and phone are
 // shown as plain text (no mailto:/tel: links, by request); only social
@@ -15,16 +25,7 @@ export default function About() {
     <div className={styles.root}>
       <main className={styles.main}>
         <section className={styles.intro}>
-          <figure className={styles.portrait}>
-            <Image
-              src="/om/martin.webp"
-              alt="Martin Magnussen"
-              width={516}
-              height={689}
-              priority
-              sizes="(max-width: 768px) 70vw, 380px"
-            />
-          </figure>
+          <PortraitDeck images={PHOTOS} alt="Martin Magnussen" />
 
           <div className={styles.bio}>
             <p className={`${styles.kicker} mono`}>om meg</p>

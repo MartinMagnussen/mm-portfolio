@@ -1,0 +1,78 @@
+.deck {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+}
+
+/* The clickable stack. A reset button so the whole portrait area advances. */
+.stack {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 516 / 689;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  /* Room for the deeper cards to peek out without clipping. */
+  margin-bottom: 28px;
+}
+
+.card {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+  transform-origin: center;
+  transition: transform 0.55s var(--ease), box-shadow 0.5s var(--ease);
+  will-change: transform;
+}
+
+.card :global(img) {
+  object-fit: cover;
+}
+
+/* ---- Indicator dots (squares) ---- */
+.dots {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  /* Above every card (max card z-index equals the image count). */
+  z-index: 999;
+  display: flex;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(10, 10, 11, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(10px) saturate(1.6);
+  -webkit-backdrop-filter: blur(10px) saturate(1.6);
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: none;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.42);
+  cursor: pointer;
+  transition: background 0.25s var(--ease), transform 0.25s var(--ease);
+}
+
+.dot:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.dot[data-active] {
+  background: var(--accent);
+  transform: scale(1.18);
+}
+
+@media (max-width: 720px) {
+  .deck {
+    max-width: 260px;
+  }
+}
