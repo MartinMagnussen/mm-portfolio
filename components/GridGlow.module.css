@@ -7,3 +7,14 @@
   display: block;
   pointer-events: none;
 }
+
+/* Page-wide instance (mounted in the root layout): pinned to the viewport and
+   tucked behind all content, so the cursor glow rides over the body grid on
+   the list and about pages. */
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  display: block;
+  pointer-events: none;
+}

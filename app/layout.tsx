@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Bricolage_Grotesque, Archivo, Space_Mono } from "next/font/google";
+import GridGlow from "@/components/GridGlow";
+import TopNav from "@/components/TopNav";
 import "./globals.css";
 
 const display = Bricolage_Grotesque({
@@ -57,7 +60,17 @@ export default function RootLayout({
       lang="nb"
       className={`${display.variable} ${body.variable} ${mono.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {/* Page-wide cursor glow over the body grid (list + about pages); the
+            spiral view layers its own line grid on top of an opaque backdrop. */}
+        <GridGlow asBackground />
+        {/* Persistent nav so the indicator animates across route changes.
+            Reads the URL via useSearchParams, hence the Suspense boundary. */}
+        <Suspense fallback={null}>
+          <TopNav />
+        </Suspense>
+        {children}
+      </body>
     </html>
   );
 }

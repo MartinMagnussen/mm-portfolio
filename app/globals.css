@@ -7,6 +7,9 @@
   --line-strong: rgba(255, 255, 255, 0.14);
   --card-radius: 14px;
 
+  /* Brand accent — logo, links, text selection and the cursor glow. */
+  --accent: #baff18;
+
   --font-display: var(--ff-display), system-ui, sans-serif;
   --font-body: var(--ff-body), system-ui, sans-serif;
   --font-mono: var(--ff-mono), ui-monospace, monospace;
@@ -43,6 +46,14 @@ body {
     linear-gradient(90deg, var(--line) 1px, transparent 1px);
   background-size: var(--grid) var(--grid);
   background-position: center;
+  /* Pin the grid to the viewport so it stays aligned with the fixed cursor-glow
+     canvas even while the page scrolls. */
+  background-attachment: fixed;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
 }
 
 h1,

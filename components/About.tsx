@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import styles from "./About.module.css";
 
 // Contact details live here so they're trivial to update. Email and phone are
@@ -14,34 +13,6 @@ const SOCIALS: { label: string; href: string }[] = [
 export default function About() {
   return (
     <div className={styles.root}>
-      <header className={styles.topbar}>
-        <Link
-          href="/"
-          className={styles.logo}
-          aria-label="Martin Magnussen — forside"
-        >
-          <span>m</span>
-          <span>m</span>
-        </Link>
-
-        <nav className={styles.centerNav} aria-label="Hovednavigasjon">
-          {/* Same pill as the front page; here "om meg" is the current page so
-              the sliding indicator rests under it and the others are links. */}
-          <div className={`${styles.toggle} mono`} data-view="om">
-            <span className={styles.slider} aria-hidden="true" />
-            <Link href="/" className={styles.navItem}>
-              forside
-            </Link>
-            <Link href="/" className={styles.navItem}>
-              arbeid
-            </Link>
-            <span className={styles.navItem} data-active aria-current="page">
-              om meg
-            </span>
-          </div>
-        </nav>
-      </header>
-
       <main className={styles.main}>
         <section className={styles.intro}>
           <figure className={styles.portrait}>
@@ -102,15 +73,37 @@ export default function About() {
           </dl>
 
           {SOCIALS.length > 0 ? (
-            <ul className={`${styles.socials} mono`}>
+            <div className={styles.socials}>
               {SOCIALS.map((s) => (
-                <li key={s.href}>
-                  <a href={s.href} target="_blank" rel="noopener noreferrer">
-                    {s.label}
-                  </a>
-                </li>
+                <a
+                  key={s.href}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${styles.socialBtn} mono`}
+                >
+                  {s.label}
+                  {/* Arrow that nudges out on hover — signals an external link. */}
+                  <svg
+                    className={styles.extIcon}
+                    viewBox="0 0 24 24"
+                    width="14"
+                    height="14"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M7 17 17 7M9 7h8v8"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <span className="visually-hidden">(åpner i ny fane)</span>
+                </a>
               ))}
-            </ul>
+            </div>
           ) : null}
         </section>
       </main>

@@ -1,73 +1,37 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import type { Project } from "@/lib/projects";
 import CanvasView from "@/components/CanvasView";
 import ListView from "@/components/ListView";
 import Intro from "@/components/Intro";
 import styles from "./Home.module.css";
 
-type View = "spiral" | "list";
-
 export default function Home({ projects }: { projects: Project[] }) {
-  const [view, setView] = useState<View>("spiral");
+  const params = useSearchParams();
+  const router = useRouter();
+  // The view is URL-driven so the shared top-nav indicator and the canvas stay
+  // in sync, and so "arbeid" is reachable in a single click from any page.
+  const showList = params.get("view") === "arbeid";
 
-  // Spiral is the default everywhere (incl. mobile); only fall back to the
-  // calmer list view when the visitor has asked for reduced motion.
+  // Reduced-motion visitors get the calmer list by default. Redirect the URL
+  // (rather than only swapping what's rendered) so the nav indicator matches.
   useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    // Deliberate post-mount preference read: rendering "spiral" on both the
-    // server and the first client paint keeps hydration in sync, then we
-    // downgrade reduced-motion visitors to the list here.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (reduced) setView("list");
-  }, []);
+    if (params.get("view")) return;
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (reduced) router.replace("/?view=arbeid");
+  }, [params, router]);
 
   return (
     <div className={styles.root}>
-      <header className={styles.topbar}>
-        <Link href="/" className={styles.logo} aria-label="Martin Magnussen — forside">
-          <span>m</span>
-          <span>m</span>
-        </Link>
-
-        <nav className={styles.centerNav} aria-label="Hovednavigasjon">
-          <div
-            className={`${styles.toggle} mono`}
-            role="group"
-            aria-label="Bytt visning"
-            data-view={view}
-          >
-            <span className={styles.slider} aria-hidden="true" />
-            <button
-              type="button"
-              data-active={view === "spiral"}
-              aria-pressed={view === "spiral"}
-              onClick={() => setView("spiral")}
-            >
-              forside
-            </button>
-            <button
-              type="button"
-              data-active={view === "list"}
-              aria-pressed={view === "list"}
-              onClick={() => setView("list")}
-            >
-              arbeid
-            </button>
-            <Link href="/om" className={styles.navItem}>
-              om meg
-            </Link>
-          </div>
-        </nav>
-      </header>
-
       <main className={styles.stage}>
-        {view === "spiral" ? (
-          <CanvasView projects={projects} />
-        ) : (
+        {showList ? (
           <ListView projects={projects} />
+        ) : (
+          <CanvasView projects={projects} />
         )}
       </main>
 

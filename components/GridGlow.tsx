@@ -7,13 +7,22 @@ import styles from "./GridGlow.module.css";
 // the layout. Everything else is tuned for a subtle, tasteful glow.
 const GRID = 32; // cell size in px (keep in sync with --grid)
 const RADIUS = 4; // glow reach, in cells (smaller, tighter spotlight)
-const MAX_ALPHA = 0.2; // brightest (cursor) cell fill
+const MAX_ALPHA = 0.22; // brightest (cursor) cell fill
 const LINE_ALPHA = 0.07; // static grid lines (matches --line)
 const EASE = 1; // 1 = glow tracks the cursor instantly (no trailing delay)
+const GLOW_RGB = "186, 255, 24"; // accent (#baff18) tint for the lit cells
 
 // A pixelated spotlight: each grid cell lights up by how close its *centre* is
 // to the cursor, so the falloff is quantised per square instead of smooth.
-export default function GridGlow() {
+//
+// `asBackground` mode is for the page-wide instance mounted in the root layout:
+// it skips its own grid lines (the body already paints them) and only adds the
+// cursor glow, so the highlight reaches the list and about pages too.
+export default function GridGlow({
+  asBackground = false,
+}: {
+  asBackground?: boolean;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -54,23 +63,26 @@ export default function GridGlow() {
     function draw() {
       ctx!.clearRect(0, 0, vw, vh);
 
-      // Static grid lines. +0.5 keeps the 1px strokes crisp.
-      ctx!.strokeStyle = `rgba(255, 255, 255, ${LINE_ALPHA})`;
-      ctx!.lineWidth = 1;
-      ctx!.beginPath();
-      const kxMax = Math.ceil(vw / 2 / GRID);
-      const kyMax = Math.ceil(vh / 2 / GRID);
-      for (let k = -kxMax; k <= kxMax; k++) {
-        const x = Math.round(lineX(k)) + 0.5;
-        ctx!.moveTo(x, 0);
-        ctx!.lineTo(x, vh);
+      // Static grid lines. +0.5 keeps the 1px strokes crisp. Skipped in
+      // background mode, where the body's CSS grid supplies the lines.
+      if (!asBackground) {
+        ctx!.strokeStyle = `rgba(255, 255, 255, ${LINE_ALPHA})`;
+        ctx!.lineWidth = 1;
+        ctx!.beginPath();
+        const kxMax = Math.ceil(vw / 2 / GRID);
+        const kyMax = Math.ceil(vh / 2 / GRID);
+        for (let k = -kxMax; k <= kxMax; k++) {
+          const x = Math.round(lineX(k)) + 0.5;
+          ctx!.moveTo(x, 0);
+          ctx!.lineTo(x, vh);
+        }
+        for (let k = -kyMax; k <= kyMax; k++) {
+          const y = Math.round(lineY(k)) + 0.5;
+          ctx!.moveTo(0, y);
+          ctx!.lineTo(vw, y);
+        }
+        ctx!.stroke();
       }
-      for (let k = -kyMax; k <= kyMax; k++) {
-        const y = Math.round(lineY(k)) + 0.5;
-        ctx!.moveTo(0, y);
-        ctx!.lineTo(vw, y);
-      }
-      ctx!.stroke();
 
       // Lit cells around the cursor. Only the cells within the glow radius are
       // visited, so this stays cheap regardless of viewport size.
@@ -90,7 +102,7 @@ export default function GridGlow() {
             if (t <= 0) continue;
             t = t * t * (3 - 2 * t); // smoothstep for a softer falloff
             const a = t * MAX_ALPHA * glow.a;
-            ctx!.fillStyle = `rgba(255, 255, 255, ${a.toFixed(3)})`;
+            ctx!.fillStyle = `rgba(${GLOW_RGB}, ${a.toFixed(3)})`;
             // Inset by 1px so the brightened cell sits inside its grid lines.
             ctx!.fillRect(
               vw / 2 + c * GRID + 1,
@@ -163,7 +175,13 @@ export default function GridGlow() {
       document.removeEventListener("pointerleave", onLeave);
       window.removeEventListener("blur", onLeave);
     };
-  }, []);
+  }, [asBackground]);
 
-  return <canvas ref={canvasRef} className={styles.grid} aria-hidden="true" />;
+  return (
+    <canvas
+      ref={canvasRef}
+      className={asBackground ? styles.bg : styles.grid}
+      aria-hidden="true"
+    />
+  );
 }
