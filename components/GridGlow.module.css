@@ -1,0 +1,9 @@
+/* Sits above the blurred wash, below the cards — same slot as the old static
+   grid. Never intercepts pointer events so cards stay clickable. */
+.grid {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  pointer-events: none;
+}

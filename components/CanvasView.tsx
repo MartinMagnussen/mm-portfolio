@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { projectHref, type Project } from "@/lib/projects";
+import GridGlow from "./GridGlow";
 import styles from "./CanvasView.module.css";
 
 const TWO_PI = Math.PI * 2;
@@ -295,7 +296,7 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
   return (
     <div ref={viewportRef} className={styles.viewport}>
       <div ref={bgRef} className={styles.bg} aria-hidden="true" />
-      <div className={styles.grid} aria-hidden="true" />
+      <GridGlow />
 
       <div ref={fieldRef} className={styles.field}>
         {slots.map(({ project: p, isDupe }, i) => (

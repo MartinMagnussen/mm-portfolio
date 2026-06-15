@@ -23,18 +23,8 @@
   pointer-events: none;
 }
 
-/* The grid sits above the wash, below the cards. */
-.grid {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background-image:
-    linear-gradient(var(--line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--line) 1px, transparent 1px);
-  background-size: var(--grid) var(--grid);
-  background-position: center;
-}
+/* The interactive grid (GridGlow) renders a <canvas> that sits above the wash
+   and below the cards — see GridGlow.module.css. */
 
 .field {
   position: absolute;
