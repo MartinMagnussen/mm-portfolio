@@ -32,7 +32,14 @@
   line-height: 1.18;
   letter-spacing: -0.02em;
   color: var(--muted-dim);
-  transition: color 0.3s var(--ease);
+  transform-origin: center;
+  transition: color 0.3s var(--ease), transform 0.4s var(--ease),
+    opacity 0.3s var(--ease);
+}
+
+/* push the non-hovered rows back so the active title leads */
+.list:hover .item:not([data-active="true"]) .link {
+  opacity: 0.55;
 }
 
 .link .year {
@@ -51,6 +58,7 @@
 .item[data-active="true"] .link,
 .link:focus-visible {
   color: var(--fg);
+  transform: scale(1.06);
 }
 
 .item[data-active="true"] .year {

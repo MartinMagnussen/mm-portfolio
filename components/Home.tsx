@@ -5,12 +5,13 @@ import type { Project } from "@/lib/projects";
 import CanvasView from "@/components/CanvasView";
 import ListView from "@/components/ListView";
 import MenuOverlay from "@/components/MenuOverlay";
+import Intro from "@/components/Intro";
 import styles from "./Home.module.css";
 
-type View = "canvas" | "list";
+type View = "spiral" | "list";
 
 export default function Home({ projects }: { projects: Project[] }) {
-  const [view, setView] = useState<View>("canvas");
+  const [view, setView] = useState<View>("spiral");
   const [menuOpen, setMenuOpen] = useState(false);
 
   // Default to the calmer list view when motion is reduced or on small screens.
@@ -35,11 +36,11 @@ export default function Home({ projects }: { projects: Project[] }) {
         >
           <button
             type="button"
-            data-active={view === "canvas"}
-            aria-pressed={view === "canvas"}
-            onClick={() => setView("canvas")}
+            data-active={view === "spiral"}
+            aria-pressed={view === "spiral"}
+            onClick={() => setView("spiral")}
           >
-            canvas
+            spiral
           </button>
           <span className={styles.dot} aria-hidden="true" />
           <button
@@ -63,7 +64,7 @@ export default function Home({ projects }: { projects: Project[] }) {
       </header>
 
       <main className={styles.stage}>
-        {view === "canvas" ? (
+        {view === "spiral" ? (
           <CanvasView projects={projects} />
         ) : (
           <ListView projects={projects} />
@@ -88,6 +89,8 @@ export default function Home({ projects }: { projects: Project[] }) {
       </div>
 
       <MenuOverlay open={menuOpen} onClose={() => setMenuOpen(false)} />
+
+      <Intro />
     </div>
   );
 }

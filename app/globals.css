@@ -7,9 +7,9 @@
   --line-strong: rgba(255, 255, 255, 0.14);
   --card-radius: 14px;
 
-  --font-display: var(--font-display), system-ui, sans-serif;
-  --font-body: var(--font-body), system-ui, sans-serif;
-  --font-mono: var(--font-mono), ui-monospace, monospace;
+  --font-display: var(--ff-display), system-ui, sans-serif;
+  --font-body: var(--ff-body), system-ui, sans-serif;
+  --font-mono: var(--ff-mono), ui-monospace, monospace;
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --grid: 64px;

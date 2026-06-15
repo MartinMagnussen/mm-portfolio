@@ -7,12 +7,19 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 ### Fase 1 — Forside
 - `app/layout.tsx`: tre fonter (Space Grotesk / Archivo / Space Mono), full SEO + Open Graph, `lang="nb"`
 - `app/globals.css`: designtokens, reset, svakt rutenett, `:focus-visible`, `prefers-reduced-motion`
-- `components/Home.tsx`: orkestrering, canvas/liste-toggle, roterende showreel-badge, meny-knapp
-- `components/CanvasView.tsx`: floating kort (CSS 3D + GSAP), dra-for-å-panorere, cursor-parallax, idle-float
-- `components/ListView.tsx`: ren liste med gradient-preview som følger cursor
+- `components/Home.tsx`: orkestrering, spiral/liste-toggle, roterende showreel-badge, meny-knapp
+- `components/CanvasView.tsx`: **3D spiral** (CSS 3D + GSAP). Låst view — skroll/sveip beveger kortene opp/ned langs en sløyfende ribbe, looper sømløst. Hover-zoom på kort.
+- `components/Intro.tsx`: introanimasjon (mm-monogram + navn stiger inn, fader til forsiden). Spilles én gang per økt, hopper over ved reduced-motion. Ingen lyd.
+- `components/ListView.tsx`: ren liste, aktiv rad lyser opp + skalerer, gradient-preview følger cursor
 - `components/MenuOverlay.tsx`: fullskjerm-dialog (Esc, fokusfelle, scroll-lock)
 - `lib/projects.ts`: placeholder-data (8 prosjekter, 2 featured)
 - A11y/responsivt verifisert: reduced-motion + ≤768px → liste-fallback, ingen horisontal overflow på mobil, WCAG-kontrast, tastaturnav
+
+### Rettelser (runde 2, etter tilbakemelding)
+- **Font-bug fikset:** `--font-display/body/mono` var selvrefererende (cyklisk `var()`) → CSS ugyldig → falt tilbake til serif. Nå peker de på egne `--ff-*`-variabler fra next/font.
+- Canvas → ekte **spiral** drevet av skroll (var tidligere fri dra-panorering).
+- Hint: "dra for å utforske" → "skroll for å utforske".
+- Lagt til introanimasjon og tydeligere hover på både kort og liste.
 
 ### Fase 0 — Oppsett
 

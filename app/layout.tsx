@@ -3,19 +3,19 @@ import { Space_Grotesk, Archivo, Space_Mono } from "next/font/google";
 import "./globals.css";
 
 const display = Space_Grotesk({
-  variable: "--font-display",
+  variable: "--ff-display",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
 
 const body = Archivo({
-  variable: "--font-body",
+  variable: "--ff-body",
   subsets: ["latin"],
   weight: ["300", "400", "500"],
 });
 
 const mono = Space_Mono({
-  variable: "--font-mono",
+  variable: "--ff-mono",
   subsets: ["latin"],
   weight: ["400", "700"],
 });
