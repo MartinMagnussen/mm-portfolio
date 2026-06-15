@@ -2,7 +2,19 @@
 
 Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikler og designer.
 
-## Status: Fase 0 — Oppsett ✅ FERDIG
+## Status: Fase 1 — Forside ✅ FERDIG (venter på godkjenning)
+
+### Fase 1 — Forside
+- `app/layout.tsx`: tre fonter (Space Grotesk / Archivo / Space Mono), full SEO + Open Graph, `lang="nb"`
+- `app/globals.css`: designtokens, reset, svakt rutenett, `:focus-visible`, `prefers-reduced-motion`
+- `components/Home.tsx`: orkestrering, canvas/liste-toggle, roterende showreel-badge, meny-knapp
+- `components/CanvasView.tsx`: floating kort (CSS 3D + GSAP), dra-for-å-panorere, cursor-parallax, idle-float
+- `components/ListView.tsx`: ren liste med gradient-preview som følger cursor
+- `components/MenuOverlay.tsx`: fullskjerm-dialog (Esc, fokusfelle, scroll-lock)
+- `lib/projects.ts`: placeholder-data (8 prosjekter, 2 featured)
+- A11y/responsivt verifisert: reduced-motion + ≤768px → liste-fallback, ingen horisontal overflow på mobil, WCAG-kontrast, tastaturnav
+
+### Fase 0 — Oppsett
 
 ### Gjort
 - Next.js 16 (App Router, TypeScript, ESLint) scaffoldet
@@ -26,14 +38,14 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 - **Krav:** WCAG AA, `prefers-reduced-motion`, alt-tekst, tastaturnav, høy Lighthouse, progressiv bildelasting.
 
 ## Faseplan (checkpoint mellom hver)
-0. **Oppsett** — pågår
-1. **Forside** — canvas + liste + menu (placeholder-kort)
+0. **Oppsett** — ✅ ferdig
+1. **Forside** — ✅ ferdig (canvas + liste + menu, placeholder-kort)
 2. **Prosjektsider** — mal + fyll inn per levert mappe
 3. **Om meg / kontakt**
 4. **Polish** — ytelse, a11y, responsivt, SEO/OG, pre-delivery-sjekkliste
 
 ## Neste steg
-Fase 1 — forside: canvas (CSS 3D + GSAP) + liste-visning med toggle + menu-overlay, med placeholder-kort. Stopp for godkjenning.
+Fase 2 — prosjektsider (`/prosjekt/[slug]`): hero-bånd → case → "neste prosjekt". Starter når Fase 1 er godkjent og første prosjektmappe er levert.
 
 ## Filstrategi
 - Inspo-materiale: midlertidig, utenfor repo, slettes etter designgodkjenning (allerede godkjent — kan slettes).

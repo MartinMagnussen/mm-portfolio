@@ -1,0 +1,116 @@
+.viewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  perspective: 1300px;
+  cursor: grab;
+  touch-action: none;
+}
+
+.viewport[data-dragging="true"] {
+  cursor: grabbing;
+}
+
+.field {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.cardPos {
+  position: absolute;
+  width: var(--w);
+  transform: translate(-50%, -50%) translateZ(var(--z)) rotateZ(var(--rot));
+}
+
+.cardFloat {
+  will-change: transform;
+}
+
+.card {
+  display: block;
+  position: relative;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  transition: transform 0.45s var(--ease), box-shadow 0.45s var(--ease);
+  outline-offset: 6px;
+}
+
+.card[data-featured="true"] {
+  aspect-ratio: 16 / 10;
+}
+
+.thumb {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.55), transparent 55%);
+  opacity: 0;
+  transition: opacity 0.45s var(--ease);
+}
+
+.card:hover,
+.card:focus-visible {
+  transform: scale(1.05);
+  box-shadow: 0 36px 90px rgba(0, 0, 0, 0.6);
+}
+
+.card:hover::after,
+.card:focus-visible::after {
+  opacity: 1;
+}
+
+.label {
+  position: absolute;
+  left: 16px;
+  bottom: 14px;
+  right: 16px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: #fff;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+}
+
+.card:hover .label,
+.card:focus-visible .label {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.label .title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.15rem;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+.label .tag {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.hint {
+  position: fixed;
+  bottom: clamp(16px, 3vw, 36px);
+  right: clamp(16px, 3vw, 36px);
+  z-index: 20;
+  color: var(--muted);
+  pointer-events: none;
+}
