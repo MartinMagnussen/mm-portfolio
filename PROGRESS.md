@@ -51,6 +51,10 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 - **Glass-bobler på spiral/liste-toggle:** toggle-gruppen er nå en glass-pille (backdrop-blur + saturate, svak hvit kant, inset-highlight, dyp skygge) så etikettene er lesbare over både spiral og liste. Aktiv etikett får en egen glass-lozenge. Meny-knappen oppgradert til samme glass-look. (Ekte refraksjon/displacement er ikke pålitelig støttet i CSS på tvers av nettlesere — brukte derfor polert glassmorfisme.)
 - **Liste-preview enda større:** `clamp(440px, 68vw, 960px)` så kortet dekker hele titlene. Teksten ligger foran kortet og inverterer via `mix-blend-mode: difference` for lesbarhet ved lav kontrast.
 
+### Rettelser (runde 9, etter tilbakemelding)
+- **Liste-preview mindre + magnetisk, ankret på linjen:** kortet er nå `clamp(320px, 44vw, 560px)` (ikke for stort), forankret i den hovrede radens senter og forskyves mot musepekeren (`--px/--py`, faktor 0.2) — peker oppe-til-høyre for teksten → kortet er der også; nede-til-venstre → likeså. Teksten ligger fortsatt foran og inverterer via `mix-blend-mode: difference`.
+- **Tydeligere glass-pille:** sterkere fyll/kant/skygge på spiral/liste-toggle (bg 0.10, kant 0.22, blur 18 + saturate 1.8) så bakgrunnen rundt knappene er synlig; aktiv-lozenge også sterkere.
+
 ### Fase 0 — Oppsett
 
 ### Gjort

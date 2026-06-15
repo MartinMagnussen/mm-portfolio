@@ -75,11 +75,11 @@
 }
 
 .preview {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  /* Big — large enough to sit behind the whole stack of titles. */
-  width: clamp(440px, 68vw, 960px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  /* Medium — anchored on the hovered row, drifting toward the cursor. */
+  width: clamp(320px, 44vw, 560px);
   aspect-ratio: 16 / 9;
   background-size: cover;
   background-position: center;
@@ -87,9 +87,11 @@
   pointer-events: none;
   z-index: 0;
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.92);
+  /* --px/--py are the magnetic offset toward the cursor (set in JS). */
+  transform: translate(-50%, -50%) translate(var(--px, 0px), var(--py, 0px))
+    scale(0.92);
   rotate: 0deg;
-  transition: opacity 0.4s var(--ease), transform 0.5s var(--ease),
+  transition: opacity 0.4s var(--ease), transform 0.3s var(--ease),
     rotate 0.5s var(--ease);
   box-shadow: 0 40px 110px rgba(0, 0, 0, 0.6);
 }
@@ -97,7 +99,8 @@
 /* scale up a touch and lean to a random side (--tilt set per item) */
 .preview[data-show="true"] {
   opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
+  transform: translate(-50%, -50%) translate(var(--px, 0px), var(--py, 0px))
+    scale(1);
   rotate: var(--tilt, 0deg);
 }
 
