@@ -16,7 +16,8 @@ const PATH_Z_DEG = 3.6; // idle roll of the whole path
 const PATH_SPEED = 0.00012; // path drift speed (per ms) — slow, scroll-independent
 const SCROLL_SPIN = 90; // scroll velocity → a touch of extra path roll
 const MAG_REACH = 1.25; // magnetic radius as a multiple of the card half-size
-const MAG_PULL = 0.34; // how strongly an engaged card follows the cursor
+const MAG_PULL = 0.18; // how far an engaged card drifts toward the cursor (subtle)
+const MAG_EASE = 0.06; // how quickly it eases toward that offset (lower = slower)
 
 export default function CanvasView({ projects }: { projects: Project[] }) {
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -113,8 +114,8 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
           tx = engDx * MAG_PULL * ease;
           ty = engDy * MAG_PULL * ease;
         }
-        mag[i].x += (tx - mag[i].x) * 0.18;
-        mag[i].y += (ty - mag[i].y) * 0.18;
+        mag[i].x += (tx - mag[i].x) * MAG_EASE;
+        mag[i].y += (ty - mag[i].y) * MAG_EASE;
       }
 
       // Idle motion (drift, sway, path rotation) pauses while inspecting a card.
