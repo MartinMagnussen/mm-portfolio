@@ -78,18 +78,19 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
       const fadeEnd = vh * 0.6; // …gone by here (so lane swaps hide off-screen)
       const backX = vw * BACK_SHIFT; // how far right the return lane sits
 
-      // Rects reflect last frame's transforms — close enough for proximity, and
-      // reading them all up front avoids interleaved read/write layout thrash.
-      const rects = cards.map((c) => c.getBoundingClientRect());
-
       // Engage the card whose *centre* the cursor is nearest, within a magnetic
       // radius. Centre-based (not pixel-based) so a partly-covered card still
       // responds — and the engaged card is lifted to the front below.
+      // Reading every card's rect forces a layout flush, so only do it when the
+      // cursor is actually over the viewport (i.e. when engagement can happen).
       engaged = -1;
       let engagedND = Infinity;
       let engDx = 0;
       let engDy = 0;
       if (ptr.inside) {
+        // Rects reflect last frame's transforms — close enough for proximity,
+        // and reading them all up front avoids interleaved read/write thrash.
+        const rects = cards.map((c) => c.getBoundingClientRect());
         for (let i = 0; i < n; i++) {
           if (opacities[i] <= 0.12 || backCard[i]) continue;
           const rc = rects[i];

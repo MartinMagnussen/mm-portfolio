@@ -74,6 +74,10 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 ### Rettelser (runde 15, etter tilbakemelding)
 - **Retur-bane-kort (de som går motsatt vei nedover):** tre justeringer. (1) *Mindre* — egen `BACK_SCALE = 0.58` brukes nå i skala-formelen i stedet for den gamle 0.82. (2) *Ikke klikkbare/hoverbare* — `pointerEvents` settes kun `auto` for front-bane-kort; et `backCard[]`-flagg ekskluderer dem også fra magnet-/engasjement-løkka, så de kan verken klikkes eller løftes fram. (3) *Lengre til høyre* — `BACK_SHIFT` hevet fra 0.17 → 0.27 (× viewport-bredde).
 
+### Ytelse (runde 16)
+- **Bildeoptimalisering (–87 % nedlasting):** prosjektbildene var 4K JPEG (3840×2160, ~2,56 MB totalt) men vises aldri bredere enn ~500px. Skalert til 1600px + WebP (q80) → ~338 KB totalt, visuelt identisk. Originalene flyttet til `assets/project-originals` (utenfor `public/`, deployes ikke) for re-eksport. Skript: `scripts/optimize-images.mjs`, kjør med `npm run optimize-images` (idempotent). `lib/projects.ts` peker nå på `.webp`. `sharp` lagt til som dev-avhengighet.
+- **Mindre layout-arbeid i render-loopen:** `getBoundingClientRect` på alle kort leses nå kun når musepekeren er inne i viewporten (magnet-effekten kan uansett ikke skje ellers). Sparer en layout-flush per frame uten synlig endring.
+
 ### Fase 0 — Oppsett
 
 ### Gjort
