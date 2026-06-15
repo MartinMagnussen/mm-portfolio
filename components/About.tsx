@@ -2,9 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./About.module.css";
 
-// Contact details live here so they're trivial to update. Links only render
-// when filled in, so the contact block never shows half-empty placeholders.
+// Contact details live here so they're trivial to update. Email and phone are
+// shown as plain text (no mailto:/tel: links, by request); only social
+// profiles are clickable. Each renders only when filled in.
 const EMAIL = "martin.magnussen@outlook.com";
+const PHONE = "+47 950 71 791";
 const SOCIALS: { label: string; href: string }[] = [
   { label: "linkedin", href: "https://www.linkedin.com/in/martin-b-magnussen" },
 ];
@@ -84,11 +86,20 @@ export default function About() {
             prat.
           </p>
 
-          {EMAIL ? (
-            <a className={styles.emailBtn} href={`mailto:${EMAIL}`}>
-              {EMAIL}
-            </a>
-          ) : null}
+          <dl className={styles.details}>
+            {EMAIL ? (
+              <div className={styles.detailRow}>
+                <dt className="mono">e-post</dt>
+                <dd>{EMAIL}</dd>
+              </div>
+            ) : null}
+            {PHONE ? (
+              <div className={styles.detailRow}>
+                <dt className="mono">telefon</dt>
+                <dd>{PHONE}</dd>
+              </div>
+            ) : null}
+          </dl>
 
           {SOCIALS.length > 0 ? (
             <ul className={`${styles.socials} mono`}>
