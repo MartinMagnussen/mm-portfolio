@@ -10,13 +10,13 @@ export default function ListView({ projects }: { projects: Project[] }) {
   const previewRef = useRef<HTMLDivElement>(null);
 
   // Lean the preview a little, re-rolled only when we land on a new row. Each
-  // step moves at most 15° from the current lean and stays within ±20°, so it
+  // step moves at most 10° from the current lean and stays within ±10°, so it
   // wanders gently and never snaps from one extreme to the other.
   function show(i: number) {
     if (active === i) return;
     setTilt((prev) => {
-      const step = (Math.random() * 2 - 1) * 15;
-      return Math.max(-20, Math.min(20, prev + step));
+      const step = (Math.random() * 2 - 1) * 10;
+      return Math.max(-10, Math.min(10, prev + step));
     });
     setActive(i);
   }
