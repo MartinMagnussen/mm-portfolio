@@ -24,9 +24,7 @@ const BACK_FADE = 0.55; // opacity of the return lane
 const MAG_REACH = 1.25; // magnetic radius as a multiple of the card half-size
 const MAG_PULL = 0.18; // how far an engaged card drifts toward the cursor (subtle)
 const MAG_EASE = 0.06; // how quickly it eases toward that offset (lower = slower)
-const EDGE_PAD = 14; // px breathing room so a front card never touches the edge
-const FRONT_PEAK_SCALE = 1.06; // the largest a front card grows through the middle
-const WHEEL_FRICTION = 0.85; // desktop scroll inertia: higher = longer glide
+const WHEEL_FRICTION = 0.93; // desktop scroll inertia: higher = longer glide
 const WHEEL_IMPULSE = 1 - WHEEL_FRICTION; // keeps total scroll distance unchanged
 
 export default function CanvasView({ projects }: { projects: Project[] }) {
@@ -67,16 +65,6 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
     const backCard = cards.map(() => false); // last frame: is this on the return lane?
     const reveal = cards.map(() => ({ v: reduced ? 1 : 0 }));
 
-    // Widest card (the featured one) drives how far the front lane may swing
-    // without leaving the viewport. Measured once and on resize — offsetWidth is
-    // a layout read, so we keep it out of the per-frame render loop.
-    let maxCardW = 0;
-    const measureCards = () => {
-      maxCardW = cards.reduce((m, c) => Math.max(m, c.offsetWidth), 0);
-    };
-    measureCards();
-    window.addEventListener("resize", measureCards);
-
     // Intro: cards bloom in with a slight stagger.
     if (!reduced) {
       reveal.forEach((r, i) =>
@@ -87,15 +75,7 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
     function render(_time: number, deltaTime: number) {
       const vh = window.innerHeight;
       const vw = window.innerWidth;
-      // Cap the front-lane swing so the widest card stays fully on-screen even at
-      // its peak scale — on narrow phones this shrinks the swing toward zero so a
-      // highlighted card never spills off the side. (Back-lane cards intentionally
-      // drift further out and aren't constrained here.)
-      const ampCap = Math.max(
-        0,
-        vw / 2 - (maxCardW * FRONT_PEAK_SCALE) / 2 - EDGE_PAD,
-      );
-      const ampX = Math.min(vw * 0.27, 360, ampCap); // horizontal swing of the front lane
+      const ampX = Math.min(vw * 0.27, 360); // horizontal swing of the front lane
       const yExtent = vh * YEXTENT_FRAC; // cards travel well past the top/bottom edges
       const fadeStart = vh * 0.32; // fully visible within here…
       const fadeEnd = vh * 0.6; // …gone by here (so lane swaps hide off-screen)
@@ -297,7 +277,6 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
       viewport.removeEventListener("wheel", onWheel);
       viewport.removeEventListener("touchstart", onTouchStart);
       viewport.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("resize", measureCards);
     };
   }, [projects]);
 
