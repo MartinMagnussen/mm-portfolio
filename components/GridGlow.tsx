@@ -7,7 +7,8 @@ import styles from "./GridGlow.module.css";
 // the layout. Everything else is tuned for a subtle, tasteful glow.
 const GRID = 32; // cell size in px (keep in sync with --grid)
 const RADIUS = 4; // glow reach, in cells (smaller, tighter spotlight)
-const MAX_ALPHA = 0.2; // brightest (cursor) cell fill
+const MAX_ALPHA = 0.36; // brightest (cursor) cell fill
+const FALLOFF = 2.2; // >1 concentrates light at the centre without growing the reach
 const LINE_ALPHA = 0.07; // static grid lines (matches --line)
 const EASE = 0.08; // how quickly the glow eases toward the cursor (low = a soft trailing delay)
 
@@ -89,6 +90,7 @@ export default function GridGlow() {
             let t = 1 - d / R;
             if (t <= 0) continue;
             t = t * t * (3 - 2 * t); // smoothstep for a softer falloff
+            t = Math.pow(t, FALLOFF); // bias brightness toward the centre cell
             const a = t * MAX_ALPHA * glow.a;
             ctx!.fillStyle = `rgba(255, 255, 255, ${a.toFixed(3)})`;
             // Inset by 1px so the brightened cell sits inside its grid lines.
