@@ -12,7 +12,7 @@
   --font-mono: var(--ff-mono), ui-monospace, monospace;
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --grid: 64px;
+  --grid: 32px;
 }
 
 *,
