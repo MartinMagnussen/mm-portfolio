@@ -32,7 +32,7 @@ export default function Home({ projects }: { projects: Project[] }) {
           <span>m</span>
         </Link>
 
-        <nav className={styles.centerNav}>
+        <nav className={styles.centerNav} aria-label="Hovednavigasjon">
           <div
             className={`${styles.toggle} mono`}
             role="group"
@@ -46,7 +46,7 @@ export default function Home({ projects }: { projects: Project[] }) {
               aria-pressed={view === "spiral"}
               onClick={() => setView("spiral")}
             >
-              spiral
+              forside
             </button>
             <button
               type="button"
@@ -54,13 +54,12 @@ export default function Home({ projects }: { projects: Project[] }) {
               aria-pressed={view === "list"}
               onClick={() => setView("list")}
             >
-              liste
+              arbeid
             </button>
+            <Link href="/om" className={styles.navItem}>
+              om meg
+            </Link>
           </div>
-
-          <Link href="/om" className={`${styles.navLink} mono`}>
-            om meg
-          </Link>
         </nav>
       </header>
 
