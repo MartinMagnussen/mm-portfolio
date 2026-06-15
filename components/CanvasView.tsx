@@ -35,6 +35,12 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
     const wrap = (v: number) => ((v % 1) + 1) % 1;
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
+    // Fixed depth layers, woven 1,2,3,2,1,2,3,2… by card index. Stacking is tied
+    // to the card itself, never to where it sits on screen — so a card that's
+    // behind another stays behind, and neighbours never share a layer.
+    const LAYER = [1, 2, 3, 2];
+    const LAYER_GAP = 110; // px between adjacent depth layers
+
     let target = 0; // user-driven offset (loops)
     let current = 0; // smoothed offset
     let swayT = 0; // sway clock (ms), frozen while a card is hovered
@@ -55,13 +61,17 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
       const vw = window.innerWidth;
       const amp = Math.min(vw * 0.27, 360);
 
-      const moving = !hovering && !reduced;
-      if (moving) {
+      // Hovering pauses only the spiral's *own* idle motion (drift, sway, path
+      // rotation). Scrolling is an explicit action, so the smoothing toward
+      // `target` always runs — you can scroll through the spiral even while the
+      // pointer rests on a card.
+      const idle = !hovering && !reduced;
+      if (idle) {
         target += AUTO;
         swayT += deltaTime;
         pathT += deltaTime;
       }
-      if (!hovering) current += (target - current) * 0.09;
+      current += (target - current) * 0.09;
 
       // The whole path drifts/rotates idly on its own clock — never from scroll,
       // frozen while a card is hovered so inspection stays perfectly still.
@@ -78,10 +88,11 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
         const dist = Math.abs(u - 0.5) * 2; // 0 centre band → 1 edges
         const x = Math.sin(angle) * amp;
         const y = (0.5 - u) * SPREAD * vh;
-        // Depth follows prominence: the centre card comes forward, edges recede.
-        // Keeping z monotonic with dist makes the 3D stacking agree with z-index,
-        // so cards never clip over each other in the wrong order.
-        const z = lerp(120, -260, dist);
+        // Fixed depth + stacking per card (woven 1,2,3,2…), independent of
+        // screen position. Both the 3D z and z-index use the same layer so they
+        // can never disagree and clip in the wrong order.
+        const layer = LAYER[i % LAYER.length];
+        const z = (layer - 2) * LAYER_GAP;
 
         const r = reveal[i].v;
         const scale = lerp(1.04, 0.52, dist) * lerp(0.86, 1, r);
@@ -93,7 +104,7 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
         const el = cards[i];
         el.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${y}px, ${z}px) rotateY(${ry}deg) rotateZ(${rz}deg) scale(${scale})`;
         el.style.opacity = `${Math.max(opacity, 0)}`;
-        el.style.zIndex = `${Math.round((1 - dist) * 100)}`;
+        el.style.zIndex = `${layer}`;
         // Any reasonably visible card stays interactive; only near-invisible
         // edge cards drop out so they can't steal hovers/clicks.
         el.style.pointerEvents = opacity > 0.12 ? "auto" : "none";
@@ -161,7 +172,13 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
               aria-label={`${p.title} — ${p.tag}, ${p.year}`}
               onDragStart={(e) => e.preventDefault()}
             >
-              <span className={styles.thumb} style={{ background: p.gradient }} />
+              <span
+                className={styles.thumb}
+                style={{
+                  backgroundColor: "#0a0a0b",
+                  backgroundImage: `url(${p.image})`,
+                }}
+              />
               <span className={styles.label}>
                 <span className={styles.title}>{p.title}</span>
                 <span className={styles.tag}>

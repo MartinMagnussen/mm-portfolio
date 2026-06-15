@@ -71,6 +71,8 @@
   left: 0;
   width: 240px;
   aspect-ratio: 4 / 3;
+  background-size: cover;
+  background-position: center;
   border-radius: var(--card-radius);
   pointer-events: none;
   z-index: 5;

@@ -57,7 +57,9 @@ export default function ListView({ projects }: { projects: Project[] }) {
         data-show={active !== null}
         style={
           {
-            background: active !== null ? projects[active].gradient : undefined,
+            backgroundColor: "#0a0a0b",
+            backgroundImage:
+              active !== null ? `url(${projects[active].image})` : undefined,
             "--tilt": `${tilt}deg`,
           } as React.CSSProperties
         }

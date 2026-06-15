@@ -31,6 +31,11 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 - **Hover virker på alle synlige kort:** senket pointer-events-terskel (0.4 → 0.12), så semi-synlige kort også reagerer på hover/klikk.
 - **Idle path-rotasjon:** hele banen vipper/ruller sakte på egen klokke (rotateX/Z, ~52s syklus) — uavhengig av scroll, fryser ved hover.
 
+### Rettelser (runde 5, etter tilbakemelding)
+- **Scroll mens man hoverer:** hover pauser nå kun spiralens *egen* idle-bevegelse (drift/sway/path). Smoothing mot `target` kjører alltid, så man kan scrolle gjennom spiralen selv med pekeren på et kort — ingen oppsamlings-bug/hopp lenger.
+- **Stabil stabling (z-index):** dybde + z-index settes per kort i et fast vev `1,2,3,2,…` (uavhengig av skjermposisjon), nabokort deler aldri lag. Et kort som ligger bak et annet blir liggende bak.
+- **Ekte placeholder-bilder:** lagt inn 5 nedlastede bilder i `public/projects/` (fra-sofa-til-sporty, sporty-rebrand, eide-bruktbil, sbg-helene, gt-challenge). Fjernet alle «Konsept X»-placeholdere. Kort og liste-preview viser nå bildene (gradient beholdt som fallback).
+
 ### Fase 0 — Oppsett
 
 ### Gjort
