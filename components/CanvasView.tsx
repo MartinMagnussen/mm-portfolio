@@ -15,6 +15,9 @@ const PATH_X_DEG = 3.2; // idle pitch of the whole path
 const PATH_Z_DEG = 3.6; // idle roll of the whole path
 const PATH_SPEED = 0.00012; // path drift speed (per ms) — slow, scroll-independent
 const SCROLL_SPIN = 90; // scroll velocity → a touch of extra path roll
+const RING_DEPTH = 0.85; // ring depth (z) as a fraction of horizontal amplitude
+const BACK_BLUR = 5; // px blur on the far (back) side of the ring
+const BACK_FADE = 0.4; // opacity floor as a card rounds to the back
 const MAG_REACH = 1.25; // magnetic radius as a multiple of the card half-size
 const MAG_PULL = 0.18; // how far an engaged card drifts toward the cursor (subtle)
 const MAG_EASE = 0.06; // how quickly it eases toward that offset (lower = slower)
@@ -39,12 +42,6 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
 
     const wrap = (v: number) => ((v % 1) + 1) % 1;
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-
-    // Fixed depth layers, woven 1,2,3,2,1,2,3,2… by card index. Stacking is tied
-    // to the card itself, never to where it sits on screen — so a card that's
-    // behind another stays behind, and neighbours never share a layer.
-    const LAYER = [1, 2, 3, 2];
-    const LAYER_GAP = 110; // px between adjacent depth layers
 
     let target = 0; // user-driven offset (loops)
     let current = 0; // smoothed offset
@@ -150,30 +147,36 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
           centreDist = dist;
           centreI = i;
         }
+        // The path is now a ring: cards swing left↔right (x) AND front↔back (z),
+        // so the spiral wraps around in a loop. The far side rounds away into
+        // the distance, where it's dimmed and softly blurred.
         const x = Math.sin(angle) * amp;
+        const z = Math.cos(angle) * amp * RING_DEPTH;
         const y = (0.5 - u) * SPREAD * vh;
-        // Fixed depth + stacking per card (woven 1,2,3,2…), independent of
-        // screen position, so cards never clip in the wrong order.
-        const layer = LAYER[i % LAYER.length];
-        const z = (layer - 2) * LAYER_GAP;
+        const front = (z / (amp * RING_DEPTH) + 1) / 2; // 1 = nearest, 0 = back
 
         const r = reveal[i].v;
         const scale = lerp(1.04, 0.52, dist) * lerp(0.86, 1, r);
         const ry = -(x / amp) * 26;
         const sway = reduced ? 0 : Math.sin(swayT * SWAY_SPEED + i * 1.7) * SWAY_DEG;
         const rz = (x / amp) * 4 + sway;
-        const opacity = Math.min(Math.sin(u * Math.PI) * 1.6, 1) * r;
+        const opacity =
+          Math.min(Math.sin(u * Math.PI) * 1.6, 1) * lerp(BACK_FADE, 1, front) * r;
         opacities[i] = opacity;
+
+        const isEng = i === engaged;
+        const blur = isEng ? 0 : (1 - front) * BACK_BLUR;
 
         const el = cards[i];
         el.style.transform = `translate(-50%, -50%) translate3d(${x + mag[i].x}px, ${y + mag[i].y}px, ${z}px) rotateY(${ry}deg) rotateZ(${rz}deg) scale(${scale})`;
         el.style.opacity = `${Math.max(opacity, 0)}`;
-        // Engaged card is lifted clear of everything else; otherwise the fixed
-        // woven layer governs the stack.
-        el.style.zIndex = i === engaged ? "60" : `${layer}`;
-        el.dataset.engaged = i === engaged ? "true" : "false";
+        el.style.filter = blur > 0.05 ? `blur(${blur.toFixed(2)}px)` : "none";
+        // Stack by real depth so the ring occludes correctly; the engaged card
+        // is lifted clear of everything else.
+        el.style.zIndex = isEng ? "9999" : `${Math.round(1000 + z)}`;
+        el.dataset.engaged = isEng ? "true" : "false";
         // Any reasonably visible card stays interactive; only near-invisible
-        // edge cards drop out so they can't steal hovers/clicks.
+        // edge/back cards drop out so they can't steal hovers/clicks.
         el.style.pointerEvents = opacity > 0.12 ? "auto" : "none";
       }
 

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Archivo, Space_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Archivo, Space_Mono } from "next/font/google";
 import "./globals.css";
 
-const display = Space_Grotesk({
+const display = Bricolage_Grotesque({
   variable: "--ff-display",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["500", "600", "700", "800"],
 });
 
 const body = Archivo({

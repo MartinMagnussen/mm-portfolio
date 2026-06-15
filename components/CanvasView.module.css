@@ -48,7 +48,7 @@
   left: 50%;
   top: 50%;
   width: var(--w, 300px);
-  will-change: transform, opacity;
+  will-change: transform, opacity, filter;
 }
 
 .cardPos[data-featured="true"] {
@@ -127,10 +127,10 @@
 
 .label .title {
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1.2rem;
   line-height: 1.05;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
 .label .tag {

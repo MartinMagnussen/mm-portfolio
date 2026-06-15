@@ -59,6 +59,10 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 - **Glidende toggle:** spiral/liste er nå en to-kolonners glass-pille med en lozenge som *glir* mellom etikettene (`translateX` på `[data-view]`, 0.38s ease, fryser ved reduced-motion).
 - **Blur bak knappene:** pillen har backdrop-blur (18px) og den glidende lozengen har egen blur (6px) så etikettene er lesbare uansett hva som ligger bak.
 
+### Rettelser (runde 11, etter tilbakemelding)
+- **Tykkere display-font med mer personlighet:** byttet Space Grotesk → **Bricolage Grotesque** (vekter 500–800). Logo 800, liste-titler 700, kort-titler 700, strammere letter-spacing.
+- **Spiralen er nå en ring:** kortene svinger ikke bare sideveis (x) men også frem/bak (z = cos·amp·0.85), så banen wrapper rundt i en løkke. Baksiden runder bort i dybden — dempet (`opacity`-gulv 0.4) og mykt blurret (opptil 5px). Stabling settes nå etter ekte dybde (`z-index ≈ 1000 + z`), engasjert kort løftes til topp og fjerner blur.
+
 ### Fase 0 — Oppsett
 
 ### Gjort
