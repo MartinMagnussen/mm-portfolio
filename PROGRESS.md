@@ -55,6 +55,10 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 - **Liste-preview mindre + magnetisk, ankret på linjen:** kortet er nå `clamp(320px, 44vw, 560px)` (ikke for stort), forankret i den hovrede radens senter og forskyves mot musepekeren (`--px/--py`, faktor 0.2) — peker oppe-til-høyre for teksten → kortet er der også; nede-til-venstre → likeså. Teksten ligger fortsatt foran og inverterer via `mix-blend-mode: difference`.
 - **Tydeligere glass-pille:** sterkere fyll/kant/skygge på spiral/liste-toggle (bg 0.10, kant 0.22, blur 18 + saturate 1.8) så bakgrunnen rundt knappene er synlig; aktiv-lozenge også sterkere.
 
+### Rettelser (runde 10, etter tilbakemelding)
+- **Glidende toggle:** spiral/liste er nå en to-kolonners glass-pille med en lozenge som *glir* mellom etikettene (`translateX` på `[data-view]`, 0.38s ease, fryser ved reduced-motion).
+- **Blur bak knappene:** pillen har backdrop-blur (18px) og den glidende lozengen har egen blur (6px) så etikettene er lesbare uansett hva som ligger bak.
+
 ### Fase 0 — Oppsett
 
 ### Gjort

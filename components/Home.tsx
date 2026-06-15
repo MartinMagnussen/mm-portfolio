@@ -33,7 +33,9 @@ export default function Home({ projects }: { projects: Project[] }) {
           className={`${styles.toggle} mono`}
           role="group"
           aria-label="Bytt visning"
+          data-view={view}
         >
+          <span className={styles.slider} aria-hidden="true" />
           <button
             type="button"
             data-active={view === "spiral"}
@@ -42,7 +44,6 @@ export default function Home({ projects }: { projects: Project[] }) {
           >
             spiral
           </button>
-          <span className={styles.dot} aria-hidden="true" />
           <button
             type="button"
             data-active={view === "list"}
