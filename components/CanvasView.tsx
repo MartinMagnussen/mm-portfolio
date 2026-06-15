@@ -11,9 +11,13 @@ const SPREAD = 1.55; // vertical travel as a multiple of viewport height
 const AUTO = 0.00004; // very slow idle drift (loops/frame)
 const SWAY_DEG = 2.6; // gentle side-to-side rock amplitude
 const SWAY_SPEED = 0.0011; // rock speed (per ms)
+const PATH_X_DEG = 3.2; // idle pitch of the whole path
+const PATH_Z_DEG = 3.6; // idle roll of the whole path
+const PATH_SPEED = 0.00012; // path drift speed (per ms) — slow, scroll-independent
 
 export default function CanvasView({ projects }: { projects: Project[] }) {
   const viewportRef = useRef<HTMLDivElement>(null);
+  const fieldRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
@@ -34,7 +38,9 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
     let target = 0; // user-driven offset (loops)
     let current = 0; // smoothed offset
     let swayT = 0; // sway clock (ms), frozen while a card is hovered
+    let pathT = 0; // idle path-rotation clock (ms), frozen while hovering
     let hovering = false; // pause all motion while inspecting a card
+    const field = fieldRef.current;
     const reveal = cards.map(() => ({ v: reduced ? 1 : 0 }));
 
     // Intro: cards bloom in with a slight stagger.
@@ -53,18 +59,30 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
       if (moving) {
         target += AUTO;
         swayT += deltaTime;
+        pathT += deltaTime;
       }
       if (!hovering) current += (target - current) * 0.09;
+
+      // The whole path drifts/rotates idly on its own clock — never from scroll,
+      // frozen while a card is hovered so inspection stays perfectly still.
+      if (field) {
+        const prx = reduced ? 0 : Math.sin(pathT * PATH_SPEED) * PATH_X_DEG;
+        const prz = reduced ? 0 : Math.sin(pathT * PATH_SPEED * 0.8 + 1.3) * PATH_Z_DEG;
+        field.style.transform = `rotateX(${prx}deg) rotateZ(${prz}deg)`;
+      }
 
       for (let i = 0; i < n; i++) {
         const u = wrap(i / n + current);
         const angle = u * TWO_PI * WAVES;
 
+        const dist = Math.abs(u - 0.5) * 2; // 0 centre band → 1 edges
         const x = Math.sin(angle) * amp;
         const y = (0.5 - u) * SPREAD * vh;
-        const z = Math.cos(angle) * 150;
+        // Depth follows prominence: the centre card comes forward, edges recede.
+        // Keeping z monotonic with dist makes the 3D stacking agree with z-index,
+        // so cards never clip over each other in the wrong order.
+        const z = lerp(120, -260, dist);
 
-        const dist = Math.abs(u - 0.5) * 2; // 0 centre band → 1 edges
         const r = reveal[i].v;
         const scale = lerp(1.04, 0.52, dist) * lerp(0.86, 1, r);
         const ry = -(x / amp) * 26;
@@ -76,8 +94,9 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
         el.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${y}px, ${z}px) rotateY(${ry}deg) rotateZ(${rz}deg) scale(${scale})`;
         el.style.opacity = `${Math.max(opacity, 0)}`;
         el.style.zIndex = `${Math.round((1 - dist) * 100)}`;
-        // Faded cards must not intercept clicks meant for the visible ones.
-        el.style.pointerEvents = opacity > 0.4 ? "auto" : "none";
+        // Any reasonably visible card stays interactive; only near-invisible
+        // edge cards drop out so they can't steal hovers/clicks.
+        el.style.pointerEvents = opacity > 0.12 ? "auto" : "none";
       }
     }
 
@@ -125,7 +144,7 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
 
   return (
     <div ref={viewportRef} className={styles.viewport}>
-      <div className={styles.field}>
+      <div ref={fieldRef} className={styles.field}>
         {projects.map((p, i) => (
           <div
             key={p.slug}

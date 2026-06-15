@@ -9,8 +9,11 @@ export default function ListView({ projects }: { projects: Project[] }) {
   const [tilt, setTilt] = useState(0);
   const previewRef = useRef<HTMLDivElement>(null);
 
-  // Lean the preview to a random side, 10–35° either way.
+  // Lean the preview to a random side, 10–35° either way — but only re-roll
+  // when we actually land on a new row, so it leans once per card (not on
+  // every pointer move within the same row).
   function show(i: number) {
+    if (active === i) return;
     const mag = 10 + Math.random() * 25;
     setTilt(Math.random() < 0.5 ? -mag : mag);
     setActive(i);
