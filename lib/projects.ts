@@ -1,3 +1,11 @@
+// The project case pages (/prosjekt/[slug]) aren't built yet. Until they are,
+// clicking a project sends the visitor back to the homepage instead of a 404.
+// Flip this to true once the pages exist and the links light up automatically.
+export const PROJECTS_READY = false;
+
+export const projectHref = (slug: string) =>
+  PROJECTS_READY ? `/prosjekt/${slug}` : "/";
+
 export type Project = {
   slug: string;
   title: string;

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import type { Project } from "@/lib/projects";
 import CanvasView from "@/components/CanvasView";
 import ListView from "@/components/ListView";
@@ -14,20 +15,24 @@ export default function Home({ projects }: { projects: Project[] }) {
   const [view, setView] = useState<View>("spiral");
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Default to the calmer list view when motion is reduced or on small screens.
+  // Spiral is the default everywhere (incl. mobile); only fall back to the
+  // calmer list view when the visitor has asked for reduced motion.
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const small = window.matchMedia("(max-width: 768px)").matches;
-    if (reduced || small) setView("list");
+    // Deliberate post-mount preference read: rendering "spiral" on both the
+    // server and the first client paint keeps hydration in sync, then we
+    // downgrade reduced-motion visitors to the list here.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (reduced) setView("list");
   }, []);
 
   return (
     <div className={styles.root}>
       <header className={styles.topbar}>
-        <a href="/" className={styles.logo} aria-label="Martin Magnussen — forside">
+        <Link href="/" className={styles.logo} aria-label="Martin Magnussen — forside">
           <span>m</span>
           <span>m</span>
-        </a>
+        </Link>
 
         <div
           className={`${styles.toggle} mono`}

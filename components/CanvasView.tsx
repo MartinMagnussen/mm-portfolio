@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import type { Project } from "@/lib/projects";
+import { projectHref, type Project } from "@/lib/projects";
 import styles from "./CanvasView.module.css";
 
 const TWO_PI = Math.PI * 2;
@@ -310,7 +310,7 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
             aria-hidden={isDupe || undefined}
           >
             <a
-              href={`/prosjekt/${p.slug}`}
+              href={projectHref(p.slug)}
               className={styles.card}
               aria-label={`${p.title} — ${p.tag}, ${p.year}`}
               tabIndex={isDupe ? -1 : undefined}

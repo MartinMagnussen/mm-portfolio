@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import type { Project } from "@/lib/projects";
+import { projectHref, type Project } from "@/lib/projects";
 import styles from "./ListView.module.css";
 
 // How strongly the card drifts toward the cursor from the row it's anchored
@@ -73,7 +73,7 @@ export default function ListView({ projects }: { projects: Project[] }) {
             onMouseLeave={() => setActive(null)}
           >
             <a
-              href={`/prosjekt/${p.slug}`}
+              href={projectHref(p.slug)}
               className={styles.link}
               onFocus={(e) => show(i, e.currentTarget)}
               onBlur={() => setActive(null)}
