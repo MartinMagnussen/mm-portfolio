@@ -77,6 +77,9 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 ### Rettelser (runde 17, etter tilbakemelding)
 - **Mykt/dempet scroll for desktop (treghet):** musehjul mater nå en hastighet som blør inn i målet og decay-er, så transportbåndet glir mykt til ro i stedet for å hakke. `WHEEL_IMPULSE = 1 − friction` gjør at total scroll-distanse er uendret — kun jevnere. Touch (mobil/iPad) skriver fortsatt målet direkte og er helt upåvirket. `prefers-reduced-motion` hopper over tregheten. (Valgte lett egenutviklet treghet framfor GSAP ScrollSmoother, som er en betalt Club-plugin og uansett er laget for ekte side-scroll, ikke dette faste lerretet.)
 
+### «Placeholder»-kort på forside + arbeid (runde 28)
+- La til et prosjekt med slug `placeholder` (tittel «Placeholder», tag «placeholder», 2025) i `lib/projects.ts`. Siden forside-canvas og arbeid-liste mater fra samme array, dukker kortet opp begge steder og lenker til `/prosjekt/placeholder` (samme mal). Thumbnail: hero-bildet skalert til `public/projects/placeholder.webp` (9 KB). Lime/svart gradient som fallback.
+
 ### Prosjektside-mal (placeholder) (runde 27)
 - **Fase 2 startet:** bygget en delt mal for prosjektsider på `/prosjekt/[slug]` (dynamisk rute, `generateStaticParams` + `generateMetadata`, alle 5 prosjekter pre-rendres som statisk HTML). `notFound()` på ukjent slug.
 - **Layout:** hero-bånd (fullbredde bilde + scrim + tittel/kicker/«← arbeid») → meta-rad (rolle/år/kunde/leveranse) + ingress → tekstblokk «utfordringen» → bred figur → to-kolonne bildepar (app + merkevare, stables på mobil) → tekstblokk «løsningen» → fullbredde «i bruk»-bilde → tekstblokk «resultatet» → «neste prosjekt»-bånd som lenker videre (wrap-around) med lime pil.

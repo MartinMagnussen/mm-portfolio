@@ -19,6 +19,15 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    slug: "placeholder",
+    title: "Placeholder",
+    year: "2025",
+    tag: "placeholder",
+    image: "/projects/placeholder.webp",
+    gradient: "linear-gradient(135deg, #baff18 0%, #4a6b0a 45%, #0a0a0b 100%)",
+    featured: true,
+  },
+  {
     slug: "fra-sofa-til-sporty",
     title: "Fra sofa til Sporty",
     year: "2025",
