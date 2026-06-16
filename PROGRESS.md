@@ -77,6 +77,10 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 ### Rettelser (runde 17, etter tilbakemelding)
 - **Mykt/dempet scroll for desktop (treghet):** musehjul mater nå en hastighet som blør inn i målet og decay-er, så transportbåndet glir mykt til ro i stedet for å hakke. `WHEEL_IMPULSE = 1 − friction` gjør at total scroll-distanse er uendret — kun jevnere. Touch (mobil/iPad) skriver fortsatt målet direkte og er helt upåvirket. `prefers-reduced-motion` hopper over tregheten. (Valgte lett egenutviklet treghet framfor GSAP ScrollSmoother, som er en betalt Club-plugin og uansett er laget for ekte side-scroll, ikke dette faste lerretet.)
 
+### Glow-effekten på touch-enheter (runde 26)
+- **Problem:** glow-en fulgte pekeren — på mobil/nettbrett finnes ingen svevende peker, så den «teleporterte» til hvert trykk og så ødelagt ut.
+- **Løsning:** `GridGlow` oppdager nå grove pekere (`(hover: none), (pointer: coarse)`). På slike enheter kobles ingen peker-lyttere på (trykk flytter aldri glow-en); i stedet driver glow-en rundt av seg selv mot tilfeldige mål med mild easing, hviler kort ved hvert mål før den glir videre, og loopen holdes i live mens komponenten er montert. Spotlighten er litt større der (`WANDER_RADIUS = 7` mot `RADIUS = 4`) så den leses som en ambient effekt. `prefers-reduced-motion` på touch gir ingen glow i det hele tatt (rutenettet står stille). Desktop er uendret — peker-følging som før.
+
 ### Fjernet skillelinje på om meg (runde 25)
 - Skillelinja mellom bio og kontakt lot seg ikke linje opp med rutenettet: rutenettet er festet til viewporten mens seksjonen scroller, så en linje i innholdet driver i forhold til rutenettet uansett scroll-posisjon. Etter Martins ønske fjernet (i stedet for å la den stå skjevt). Litt mer luft over kontakt-seksjonen kompenserer for separasjonen.
 

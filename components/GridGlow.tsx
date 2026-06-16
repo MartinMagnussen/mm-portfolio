@@ -12,6 +12,13 @@ const LINE_ALPHA = 0.07; // static grid lines (matches --line)
 const EASE = 1; // 1 = glow tracks the cursor instantly (no trailing delay)
 const GLOW_RGB = "186, 255, 24"; // accent (#baff18) tint for the lit cells
 
+// Touch devices have no hovering cursor, so instead of teleporting the glow to
+// each tap (which looked broken), it drifts around on its own. A larger reach
+// and a slow ease make the wander read as an ambient effect, not a follower.
+const WANDER_RADIUS = 7; // bigger spotlight while wandering
+const WANDER_EASE = 0.022; // slow, lazy drift toward each destination
+const WANDER_PAUSE = 1300; // ms to rest at a destination before moving on
+
 // A pixelated spotlight: each grid cell lights up by how close its *centre* is
 // to the cursor, so the falloff is quantised per square instead of smooth.
 //
@@ -35,6 +42,10 @@ export default function GridGlow({
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
+    // Coarse / hover-less pointers (phones, tablets) get the autonomous wander
+    // instead of the pointer-following glow.
+    const coarse = window.matchMedia("(hover: none), (pointer: coarse)").matches;
+
     let vw = 0;
     let vh = 0;
     let dpr = 1;
@@ -54,6 +65,18 @@ export default function GridGlow({
     // (0 when the cursor is off-screen, easing to 1 when it's over the grid).
     const target = { x: -9999, y: -9999, on: false };
     const glow = { x: -9999, y: -9999, a: 0 };
+
+    // Wander destination + the timestamp at which it's allowed to move again
+    // (set when a destination is reached, so the glow rests before drifting on).
+    const dest = { x: 0, y: 0 };
+    let restUntil = 0;
+    function pickDest() {
+      // Keep destinations a margin in from the edges so the spotlight stays
+      // mostly on screen.
+      const m = WANDER_RADIUS * GRID * 0.5;
+      dest.x = m + Math.random() * Math.max(1, vw - 2 * m);
+      dest.y = m + Math.random() * Math.max(1, vh - 2 * m);
+    }
 
     // The grid is symmetric about the viewport centre (like background-position:
     // center): a cell boundary always sits at vw/2 / vh/2.
@@ -86,7 +109,7 @@ export default function GridGlow({
       // Lit cells around the cursor. Only the cells within the glow radius are
       // visited, so this stays cheap regardless of viewport size.
       if (glow.a > 0.001) {
-        const R = RADIUS * GRID;
+        const R = (coarse ? WANDER_RADIUS : RADIUS) * GRID;
         // Cell column c spans [vw/2 + c*GRID, vw/2 + (c+1)*GRID].
         const cMin = Math.floor((glow.x - R - vw / 2) / GRID);
         const cMax = Math.ceil((glow.x + R - vw / 2) / GRID);
@@ -116,7 +139,30 @@ export default function GridGlow({
 
     let running = false;
     let raf = 0;
-    function frame() {
+    function frame(time: number) {
+      if (coarse) {
+        // Autonomous drift: ease toward the destination, and once we've nearly
+        // arrived, rest a moment before picking a new one.
+        if (glow.x < -9000) {
+          glow.x = dest.x;
+          glow.y = dest.y;
+        }
+        glow.x += (dest.x - glow.x) * WANDER_EASE;
+        glow.y += (dest.y - glow.y) * WANDER_EASE;
+        glow.a += (1 - glow.a) * WANDER_EASE * 4;
+        if (Math.hypot(dest.x - glow.x, dest.y - glow.y) < GRID) {
+          if (!restUntil) restUntil = time + WANDER_PAUSE;
+          else if (time >= restUntil) {
+            restUntil = 0;
+            pickDest();
+          }
+        }
+        draw();
+        // The wander never idles out — keep the loop alive while mounted.
+        raf = requestAnimationFrame(frame);
+        return;
+      }
+
       if (target.on) {
         if (glow.x < -9000) {
           glow.x = target.x;
@@ -170,9 +216,20 @@ export default function GridGlow({
     resize();
     draw();
     window.addEventListener("resize", onResize);
-    window.addEventListener("pointermove", onMove, { passive: true });
-    document.addEventListener("pointerleave", onLeave);
-    window.addEventListener("blur", onLeave);
+
+    if (coarse) {
+      // No pointer listeners on touch — tapping must not move the glow. Just
+      // start the self-running drift (unless reduced-motion: then it stays
+      // static with no glow at all).
+      if (!reduced) {
+        pickDest();
+        start();
+      }
+    } else {
+      window.addEventListener("pointermove", onMove, { passive: true });
+      document.addEventListener("pointerleave", onLeave);
+      window.addEventListener("blur", onLeave);
+    }
 
     return () => {
       cancelAnimationFrame(raf);
