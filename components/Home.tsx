@@ -43,13 +43,23 @@ export default function Home({ projects }: { projects: Project[] }) {
               d="M50,50 m-37,0 a37,37 0 1,1 74,0 a37,37 0 1,1 -74,0"
             />
           </defs>
-          <text className="mono" fill="var(--muted)" fontSize="9">
+          {/* Styled inline rather than via `.mono`, which forces 0.72rem and
+              lowercases — that would shrink this and break the name's casing. */}
+          <text
+            fill="var(--muted)"
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: "13px",
+              letterSpacing: "0.04em",
+            }}
+          >
+            {/* One phrase ~fills the ring, so its end meets its start cleanly. */}
             <textPath href="#badge-circle" startOffset="0%">
-              showreel · 2025 · showreel · 2025 ·
+              {`Martin Magnussen · ${new Date().getFullYear()} · `}
             </textPath>
           </text>
         </svg>
-        <span className="center">✦</span>
+        <span className={styles.center}>✦</span>
       </div>
 
       <Intro />

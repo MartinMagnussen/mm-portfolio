@@ -77,6 +77,11 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 ### Rettelser (runde 17, etter tilbakemelding)
 - **Mykt/dempet scroll for desktop (treghet):** musehjul mater nå en hastighet som blør inn i målet og decay-er, så transportbåndet glir mykt til ro i stedet for å hakke. `WHEEL_IMPULSE = 1 − friction` gjør at total scroll-distanse er uendret — kun jevnere. Touch (mobil/iPad) skriver fortsatt målet direkte og er helt upåvirket. `prefers-reduced-motion` hopper over tregheten. (Valgte lett egenutviklet treghet framfor GSAP ScrollSmoother, som er en betalt Club-plugin og uansett er laget for ekte side-scroll, ikke dette faste lerretet.)
 
+### Showreel-badge → «Martin Magnussen · år» + sentrert stjerne (runde 29)
+- Den roterende badgen nederst til venstre på forsiden sa «showreel · 2025» (uten faktisk showreel). Endret til «Martin Magnussen · [år]» der året hentes dynamisk via `new Date().getFullYear()`.
+- **Bug 1 – stjernen ikke sentrert:** `✦`-spennet brukte `className="center"` (global klasse) i stedet for `className={styles.center}`, så CSS-modulens sentrering ble aldri brukt og stjernen falt ned i normal flyt. Rettet → stjernens sentrum matcher nå badge-sentrum nøyaktig.
+- **Bug 2 – fontstørrelse hadde ingen effekt:** `.mono`-klassen tvang `font-size: 0.72rem` (og `text-transform: lowercase`), så SVG-ens `font-size`-attributt ble overstyrt – og navnet ville blitt «martin magnussen». Stiler nå `<text>` inline (mono-font, 13px, letter-spacing) uten lowercase, så frasen fyller ~91 % av ringen og navnet beholder stor forbokstav.
+
 ### «Placeholder»-kort på forside + arbeid (runde 28)
 - La til et prosjekt med slug `placeholder` (tittel «Placeholder», tag «placeholder», 2025) i `lib/projects.ts`. Siden forside-canvas og arbeid-liste mater fra samme array, dukker kortet opp begge steder og lenker til `/prosjekt/placeholder` (samme mal). Thumbnail: hero-bildet skalert til `public/projects/placeholder.webp` (9 KB). Lime/svart gradient som fallback.
 
