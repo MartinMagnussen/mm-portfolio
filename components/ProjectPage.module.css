@@ -1,0 +1,259 @@
+.root {
+  position: relative;
+  min-height: 100dvh;
+}
+
+/* Shared content column — matches the about page so pages feel related. */
+.main {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 48px);
+}
+
+/* ---- Hero band ---- */
+.hero {
+  position: relative;
+  width: 100%;
+  height: clamp(60vh, 78vh, 860px);
+  overflow: hidden;
+}
+
+.heroImg {
+  object-fit: cover;
+}
+
+/* Scrim so the title stays legible over any part of the image. */
+.heroScrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(10, 10, 11, 0.92) 0%,
+    rgba(10, 10, 11, 0.45) 38%,
+    rgba(10, 10, 11, 0.1) 70%,
+    rgba(10, 10, 11, 0.35) 100%
+  );
+}
+
+.heroInner {
+  position: absolute;
+  inset: auto 0 0 0;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 48px) clamp(36px, 6vh, 72px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.back {
+  align-self: flex-start;
+  color: var(--muted);
+  margin-bottom: clamp(12px, 3vh, 28px);
+  transition: color 0.25s var(--ease);
+}
+
+.back:hover {
+  color: var(--accent);
+}
+
+.kicker {
+  color: var(--muted);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.3rem, 7vw, 5.2rem);
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+  max-width: 18ch;
+}
+
+/* ---- Meta + lead ---- */
+.meta {
+  display: grid;
+  grid-template-columns: minmax(200px, 280px) 1fr;
+  gap: clamp(28px, 5vw, 72px);
+  padding-top: clamp(48px, 8vh, 96px);
+}
+
+.metaList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  align-self: start;
+}
+
+.metaRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.metaRow dt {
+  color: var(--muted-dim);
+}
+
+.metaRow dd {
+  color: var(--fg);
+  font-size: 1.02rem;
+}
+
+.summary {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.3rem, 2.8vw, 2rem);
+  line-height: 1.32;
+  letter-spacing: -0.015em;
+  max-width: 30ch;
+  color: var(--fg);
+}
+
+/* ---- Text blocks ---- */
+.block {
+  max-width: 64ch;
+  margin: clamp(64px, 11vh, 130px) 0 0;
+}
+
+.h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  margin-top: 0.6rem;
+}
+
+.body {
+  margin-top: 1.1rem;
+  font-size: clamp(1rem, 1.4vw, 1.12rem);
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--fg) 84%, transparent);
+}
+
+/* ---- Figures ---- */
+.figureWide {
+  margin: clamp(40px, 7vh, 80px) 0 0;
+}
+
+.figureWide img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--card-radius);
+  border: 1px solid var(--line);
+}
+
+.cap {
+  margin-top: 0.7rem;
+  color: var(--muted-dim);
+}
+
+.pair {
+  margin: clamp(28px, 4vw, 48px) 0 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(16px, 2.4vw, 28px);
+}
+
+.figurePair img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--card-radius);
+  border: 1px solid var(--line);
+}
+
+/* Full-bleed showcase — breaks out of the content column. */
+.figureBleed {
+  margin: clamp(56px, 10vh, 120px) 0;
+  width: 100%;
+}
+
+.figureBleed img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ---- Next project ---- */
+.next {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: clamp(42vh, 52vh, 560px);
+  margin-top: clamp(64px, 11vh, 130px);
+  overflow: hidden;
+}
+
+.nextImg {
+  object-fit: cover;
+  transition: transform 0.6s var(--ease);
+}
+
+.next:hover .nextImg {
+  transform: scale(1.04);
+}
+
+.nextScrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(10, 10, 11, 0.85) 0%,
+    rgba(10, 10, 11, 0.3) 60%,
+    rgba(10, 10, 11, 0.5) 100%
+  );
+}
+
+.nextInner {
+  position: absolute;
+  inset: 0;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 48px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.nextTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2rem, 5.5vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: var(--fg);
+}
+
+.nextArrow {
+  color: var(--accent);
+  transition: transform 0.3s var(--ease);
+}
+
+.next:hover .nextArrow {
+  transform: translateX(10px);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 760px) {
+  .meta {
+    grid-template-columns: 1fr;
+    gap: clamp(24px, 6vw, 40px);
+  }
+  .pair {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nextImg,
+  .nextArrow {
+    transition: none;
+  }
+}

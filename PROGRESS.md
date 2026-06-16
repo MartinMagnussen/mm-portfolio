@@ -77,6 +77,15 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 ### Rettelser (runde 17, etter tilbakemelding)
 - **Mykt/dempet scroll for desktop (treghet):** musehjul mater nå en hastighet som blør inn i målet og decay-er, så transportbåndet glir mykt til ro i stedet for å hakke. `WHEEL_IMPULSE = 1 − friction` gjør at total scroll-distanse er uendret — kun jevnere. Touch (mobil/iPad) skriver fortsatt målet direkte og er helt upåvirket. `prefers-reduced-motion` hopper over tregheten. (Valgte lett egenutviklet treghet framfor GSAP ScrollSmoother, som er en betalt Club-plugin og uansett er laget for ekte side-scroll, ikke dette faste lerretet.)
 
+### Prosjektside-mal (placeholder) (runde 27)
+- **Fase 2 startet:** bygget en delt mal for prosjektsider på `/prosjekt/[slug]` (dynamisk rute, `generateStaticParams` + `generateMetadata`, alle 5 prosjekter pre-rendres som statisk HTML). `notFound()` på ukjent slug.
+- **Layout:** hero-bånd (fullbredde bilde + scrim + tittel/kicker/«← arbeid») → meta-rad (rolle/år/kunde/leveranse) + ingress → tekstblokk «utfordringen» → bred figur → to-kolonne bildepar (app + merkevare, stables på mobil) → tekstblokk «løsningen» → fullbredde «i bruk»-bilde → tekstblokk «resultatet» → «neste prosjekt»-bånd som lenker videre (wrap-around) med lime pil.
+- **Viktig:** alt innhold er plassholder – kun layout og det visuelle skal gjenbrukes. Tekst er filler; hero/meta henter ekte felt (tittel/tag/år) fra prosjektdataene så malen tilpasser seg hver slug.
+- **Bilder:** 6 AI-genererte placeholder-bilder (Sporty-tema, på palett) konvertert til WebP i `public/projects/case/` (23–48 KB hver via `sharp`, kvalitet 80).
+- **Lenker live:** `PROJECTS_READY = true` → prosjektlenkene i liste/canvas peker nå til `/prosjekt/[slug]` i stedet for forsiden.
+- **Nav:** `TopNav` markerer «arbeid» på prosjektsider (slideren havner riktig).
+- **Responsivt + a11y:** bildepar og meta kollapser til én kolonne under 760px, scrim sikrer kontrast på tittel, `prefers-reduced-motion` skrur av hover-zoom/pil-animasjon, alt-tekster satt.
+
 ### Glow-effekten på touch-enheter (runde 26)
 - **Problem:** glow-en fulgte pekeren — på mobil/nettbrett finnes ingen svevende peker, så den «teleporterte» til hvert trykk og så ødelagt ut.
 - **Løsning:** `GridGlow` oppdager nå grove pekere (`(hover: none), (pointer: coarse)`). På slike enheter kobles ingen peker-lyttere på (trykk flytter aldri glow-en); i stedet driver glow-en rundt av seg selv mot tilfeldige mål med mild easing, hviler kort ved hvert mål før den glir videre, og loopen holdes i live mens komponenten er montert. Spotlighten er litt større der (`WANDER_RADIUS = 7` mot `RADIUS = 4`) så den leses som en ambient effekt. `prefers-reduced-motion` på touch gir ingen glow i det hele tatt (rutenettet står stille). Desktop er uendret — peker-følging som før.
@@ -149,12 +158,12 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 ## Faseplan (checkpoint mellom hver)
 0. **Oppsett** — ✅ ferdig
 1. **Forside** — ✅ ferdig (canvas + liste + menu, placeholder-kort)
-2. **Prosjektsider** — mal + fyll inn per levert mappe
+2. **Prosjektsider** — ✅ mal bygget (placeholder); fyll inn ekte innhold per levert mappe
 3. **Om meg / kontakt**
 4. **Polish** — ytelse, a11y, responsivt, SEO/OG, pre-delivery-sjekkliste
 
 ## Neste steg
-Fase 2 — prosjektsider (`/prosjekt/[slug]`): hero-bånd → case → "neste prosjekt". Starter når Fase 1 er godkjent og første prosjektmappe er levert.
+Prosjektside-malen står (placeholder). Når ekte prosjektmapper leveres: bytt ut placeholder-bilder/-tekst med faktisk case-innhold per slug, og vurder å utvide `Project`-typen med case-felter (ingress, seksjoner, bildeliste) i stedet for hardkodet filler i `ProjectPage`.
 
 ## Filstrategi
 - Inspo-materiale: midlertidig, utenfor repo, slettes etter designgodkjenning (allerede godkjent — kan slettes).

@@ -19,7 +19,7 @@ export default function TopNav() {
   const state =
     pathname === "/om"
       ? "om"
-      : params.get("view") === "arbeid"
+      : pathname.startsWith("/prosjekt") || params.get("view") === "arbeid"
         ? "arbeid"
         : "forside";
 

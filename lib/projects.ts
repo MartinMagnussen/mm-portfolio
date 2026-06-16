@@ -1,7 +1,6 @@
-// The project case pages (/prosjekt/[slug]) aren't built yet. Until they are,
-// clicking a project sends the visitor back to the homepage instead of a 404.
-// Flip this to true once the pages exist and the links light up automatically.
-export const PROJECTS_READY = false;
+// The project case pages (/prosjekt/[slug]) exist as a shared placeholder
+// template — real per-project content gets filled in later. Links are live.
+export const PROJECTS_READY = true;
 
 export const projectHref = (slug: string) =>
   PROJECTS_READY ? `/prosjekt/${slug}` : "/";
