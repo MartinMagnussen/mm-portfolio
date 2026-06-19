@@ -77,6 +77,9 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 ### Rettelser (runde 17, etter tilbakemelding)
 - **Mykt/dempet scroll for desktop (treghet):** musehjul mater nå en hastighet som blør inn i målet og decay-er, så transportbåndet glir mykt til ro i stedet for å hakke. `WHEEL_IMPULSE = 1 − friction` gjør at total scroll-distanse er uendret — kun jevnere. Touch (mobil/iPad) skriver fortsatt målet direkte og er helt upåvirket. `prefers-reduced-motion` hopper over tregheten. (Valgte lett egenutviklet treghet framfor GSAP ScrollSmoother, som er en betalt Club-plugin og uansett er laget for ekte side-scroll, ikke dette faste lerretet.)
 
+### Lime glow rundt hovret kort (runde 30)
+- La til en grønn (lime) glow rundt kortet man hovrer i canvas-visningen. Lagt på samme box-shadow som engasjert/fokusert tilstand (`[data-engaged="true"]` + `:focus-visible`), så den arver den myke transitionen og gjelder både mus (magnetisk engasjement) og tastatur. Glowen er lagdelt: en tett 1px-rim + to myke halo-lag (`color-mix` med `--accent`) oppå dybdeskyggen.
+
 ### Showreel-badge → «Martin Magnussen · år» + sentrert stjerne (runde 29)
 - Den roterende badgen nederst til venstre på forsiden sa «showreel · 2025» (uten faktisk showreel). Endret til «Martin Magnussen · [år]» der året hentes dynamisk via `new Date().getFullYear()`.
 - **Bug 1 – stjernen ikke sentrert:** `✦`-spennet brukte `className="center"` (global klasse) i stedet for `className={styles.center}`, så CSS-modulens sentrering ble aldri brukt og stjernen falt ned i normal flyt. Rettet → stjernens sentrum matcher nå badge-sentrum nøyaktig.

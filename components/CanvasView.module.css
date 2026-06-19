@@ -81,7 +81,12 @@
 .cardPos[data-engaged="true"] .card,
 .card:focus-visible {
   transform: scale(1.06);
-  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.62);
+  /* Depth shadow + a layered lime glow: a tight rim, then two soft halos so
+     the accent bleeds out around the hovered card. */
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.62),
+    0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent),
+    0 0 22px color-mix(in srgb, var(--accent) 45%, transparent),
+    0 0 55px color-mix(in srgb, var(--accent) 26%, transparent);
 }
 
 .cardPos[data-engaged="true"] .thumb,
