@@ -1,0 +1,333 @@
+.root {
+  position: relative;
+  z-index: 1;
+  min-height: 100dvh;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: clamp(110px, 17vh, 180px) clamp(20px, 5vw, 48px) clamp(60px, 10vh, 120px);
+}
+
+/* ---- Floating download action (screen only) ---- */
+.actions {
+  position: fixed;
+  bottom: clamp(16px, 3vw, 36px);
+  left: clamp(16px, 3vw, 36px);
+  z-index: 25;
+}
+
+.printBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--fg);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  transition: color 0.25s var(--ease), border-color 0.25s var(--ease),
+    background 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+
+.printBtn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent),
+    0 0 20px color-mix(in srgb, var(--accent) 40%, transparent),
+    0 0 44px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.printBtn svg {
+  flex: none;
+  transition: transform 0.25s var(--ease);
+}
+
+.printBtn:hover svg {
+  transform: translateY(2px);
+}
+
+/* ---- Header ---- */
+.head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: clamp(24px, 5vw, 56px);
+  padding-bottom: clamp(20px, 3vh, 32px);
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2.4vw, 24px);
+}
+
+.monogram {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.4rem, 6vw, 3.6rem);
+  letter-spacing: -0.05em;
+  line-height: 1;
+  color: var(--accent);
+}
+
+.name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.7rem, 4vw, 2.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+}
+
+.title {
+  margin-top: 0.25rem;
+  color: var(--muted);
+  font-size: clamp(0.95rem, 1.6vw, 1.1rem);
+}
+
+.contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: right;
+}
+
+.contactRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.contactRow dt {
+  color: var(--muted-dim);
+}
+
+.contactRow dd {
+  color: var(--fg);
+  font-size: 0.95rem;
+}
+
+/* ---- Sections ---- */
+.section {
+  display: grid;
+  grid-template-columns: minmax(120px, 180px) 1fr;
+  gap: clamp(20px, 4vw, 56px);
+  padding-top: clamp(28px, 4.5vh, 48px);
+  margin-top: clamp(28px, 4.5vh, 48px);
+  border-top: 1px solid var(--line);
+}
+
+.label {
+  color: var(--muted-dim);
+  align-self: start;
+}
+
+.sectionBody {
+  min-width: 0;
+}
+
+.lead {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  line-height: 1.45;
+  letter-spacing: -0.012em;
+  color: var(--fg);
+}
+
+/* ---- Experience / education entries ---- */
+.role {
+  margin-bottom: clamp(20px, 3vh, 32px);
+}
+
+.role:last-child {
+  margin-bottom: 0;
+}
+
+.roleHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.roleTitle {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.org {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.period {
+  flex: none;
+  color: var(--muted-dim);
+}
+
+.points {
+  list-style: none;
+  margin-top: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.points li {
+  position: relative;
+  padding-left: 1.25rem;
+  font-size: clamp(0.95rem, 1.3vw, 1.02rem);
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--fg) 82%, transparent);
+}
+
+/* Tankestrek-punkt — a lime en-dash marker. */
+.points li::before {
+  content: "–";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--accent);
+}
+
+.points strong {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+.eduPlace {
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+/* ---- Skills ---- */
+.skills {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.skillRow {
+  display: grid;
+  grid-template-columns: minmax(100px, 130px) 1fr;
+  gap: 1rem;
+  align-items: baseline;
+}
+
+.skillRow dt {
+  color: var(--muted-dim);
+}
+
+.skillRow dd {
+  color: color-mix(in srgb, var(--fg) 88%, transparent);
+  font-size: clamp(0.95rem, 1.3vw, 1.02rem);
+  line-height: 1.5;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 680px) {
+  .head {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+  .contact {
+    text-align: left;
+  }
+  .section {
+    grid-template-columns: 1fr;
+    gap: clamp(12px, 3vw, 20px);
+  }
+  .skillRow {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+}
+
+/* ---- Print: produces the PDF. Keeps the dark theme + lime accent so the CV
+   matches the site exactly. Layout chrome (nav, grid canvas, download button)
+   is hidden, and colours are forced on. ---- */
+@media print {
+  /* Paint the dark background AND the site's grid right on the page so both
+     bleed edge-to-edge (no white paper frame). The grid is a JS <canvas> on the
+     live site, which prints unreliably, so here it's reproduced as a CSS tile
+     that matches --grid (32px) and --line (rgba 0.07), centred like the site. */
+  :global(html) {
+    background-color: var(--bg) !important;
+    background-image: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0.07) 1px,
+        transparent 1px
+      ),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.07) 1px, transparent 1px) !important;
+    background-size: 32px 32px !important;
+    background-position: center !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  :global(body) {
+    background: transparent !important;
+  }
+
+  /* Hide the persistent nav and the page-wide grid canvas. */
+  :global(header),
+  :global(canvas) {
+    display: none !important;
+  }
+
+  .actions {
+    display: none !important;
+  }
+
+  /* @page margin is 0 so the background bleeds out; the breathing room lives
+     here as inner padding instead. */
+  .root {
+    max-width: none;
+    margin: 0;
+    padding: 14mm;
+    min-height: 0;
+  }
+
+  .root,
+  .sheet,
+  .head,
+  .section {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Tighten the vertical rhythm for paper (the on-screen clamps use vh, which
+     balloons against an A4 page) so the CV stays compact. */
+  .head {
+    padding-bottom: 18px;
+  }
+
+  .section {
+    padding-top: 20px;
+    margin-top: 20px;
+  }
+
+  /* Keep a single role/entry together, but let a long section flow across a
+     page break so we don't waste a whole page. */
+  .role,
+  .roleHead {
+    break-inside: avoid;
+  }
+
+  .role {
+    margin-bottom: 16px;
+  }
+}
+
+@page {
+  size: A4;
+  margin: 0;
+}
