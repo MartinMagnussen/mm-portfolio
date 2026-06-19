@@ -1,7 +1,17 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ProjectPage from "@/components/ProjectPage";
+import FraSofaTilSporty from "@/components/cases/FraSofaTilSporty";
 import { projects } from "@/lib/projects";
+
+// Slugs that have a hand-built case component. Everything else falls back to the
+// generic ProjectPage placeholder template until its real case is written.
+const CASES: Record<
+  string,
+  (typeof ProjectPage) | typeof FraSofaTilSporty
+> = {
+  "fra-sofa-til-sporty": FraSofaTilSporty,
+};
 
 // Pre-render one page per project at build time.
 export function generateStaticParams() {
@@ -44,5 +54,6 @@ export default async function Page({
   // Next project wraps around to the first once you reach the end.
   const next = projects[(index + 1) % projects.length];
 
-  return <ProjectPage project={project} next={next} />;
+  const Case = CASES[slug] ?? ProjectPage;
+  return <Case project={project} next={next} />;
 }

@@ -1,0 +1,142 @@
+/* Scroll-driven vertical timeline. Geometry is shared with ProcessTimeline.tsx:
+   the track line and node centres sit at x ≈ 11px, and a node's centre is
+   MARKER=13px below its <li> top. The fill height is driven by --progress
+   (0..1) set from JS; everything else is pure CSS so the paint stays cheap. */
+
+.timeline {
+  --progress: 0;
+  --track-x: 11px; /* horizontal centre of the line + nodes */
+  --node: 18px; /* node diameter */
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(36px, 6vh, 64px);
+}
+
+/* Dim background track — runs the full height of the list. */
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: var(--track-x);
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  transform: translateX(-50%);
+  background: var(--line-strong);
+  border-radius: 2px;
+}
+
+/* Lime glow fill — grows from the top as --progress climbs. Sits over the
+   dim track. The 12px inset (6px top + 6px bottom) matches ::before. */
+.timeline::after {
+  content: "";
+  position: absolute;
+  left: var(--track-x);
+  top: 6px;
+  width: 2px;
+  height: calc((100% - 12px) * var(--progress));
+  transform: translateX(-50%);
+  background: var(--accent);
+  border-radius: 2px;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 70%, transparent),
+    0 0 18px color-mix(in srgb, var(--accent) 45%, transparent);
+  transition: height 0.1s linear;
+  will-change: height;
+}
+
+/* ---- Steps ---- */
+.step {
+  position: relative;
+  padding-left: 44px;
+  opacity: 0.4;
+  transition: opacity 0.4s var(--ease);
+}
+
+.step[data-active="true"] {
+  opacity: 1;
+}
+
+/* Checkpoint node. Centre lands at (track-x, MARKER=13px) so the fill line
+   passes exactly through it. */
+.node {
+  position: absolute;
+  left: calc(var(--track-x) - var(--node) / 2);
+  top: calc(13px - var(--node) / 2);
+  width: var(--node);
+  height: var(--node);
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--line-strong);
+  transition: border-color 0.35s var(--ease), box-shadow 0.35s var(--ease),
+    background 0.35s var(--ease);
+}
+
+/* Inner dot. */
+.node::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--muted-dim);
+  transition: background 0.35s var(--ease), transform 0.35s var(--ease);
+}
+
+.step[data-active="true"] .node {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent),
+    0 0 14px color-mix(in srgb, var(--accent) 55%, transparent),
+    0 0 30px color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+.step[data-active="true"] .node::after {
+  background: var(--accent);
+}
+
+/* ---- Step text ---- */
+.stepNum {
+  color: var(--muted-dim);
+  margin: 0 0 0.5rem;
+  transition: color 0.4s var(--ease);
+}
+
+.step[data-active="true"] .stepNum {
+  color: var(--accent);
+}
+
+.stepTitle {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.25rem, 2.4vw, 1.7rem);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.7rem;
+}
+
+.stepText {
+  margin: 0;
+  max-width: 52ch;
+  font-size: clamp(0.98rem, 1.4vw, 1.08rem);
+  line-height: 1.65;
+  color: color-mix(in srgb, var(--fg) 82%, transparent);
+}
+
+@media (max-width: 680px) {
+  .step {
+    padding-left: 38px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timeline::after {
+    transition: none;
+  }
+  .step,
+  .node,
+  .node::after,
+  .stepNum {
+    transition: none;
+  }
+}

@@ -1,0 +1,76 @@
+/* Case-specific bits for "Fra sofa til Sporty". Structural layout (hero, main,
+   blocks, meta, next band) is reused from ProjectPage.module.css; this file only
+   adds the media slots and the wrapper around the ProcessTimeline. */
+
+/* ---- Media slots ---- */
+/* Placeholder frames stand in for assets that aren't in yet. They render as a
+   faint dashed frame with a label so the page reads as intentional, not broken.
+   When the real asset arrives, swap the element for an <Image>/<video>. */
+.slotLabel {
+  color: var(--muted-dim);
+  letter-spacing: 0.06em;
+}
+
+.placeholder {
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--card-radius);
+}
+
+/* Film — full content-width, cinematic 16:9. */
+.filmWrap {
+  max-width: 1080px;
+  margin: clamp(48px, 8vh, 96px) auto 0;
+  padding: 0 clamp(20px, 5vw, 48px);
+}
+
+.filmImg {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--card-radius);
+  border: 1px solid var(--line);
+}
+
+/* ---- Process timeline wrapper ---- */
+.processBlock {
+  margin-bottom: clamp(28px, 5vh, 48px);
+}
+
+.timelineWrap {
+  margin-top: clamp(8px, 2vh, 20px);
+  /* Indent slightly so the track aligns under the heading column, with room
+     to breathe on the left for the glow. */
+  padding-left: clamp(2px, 1vw, 10px);
+}
+
+/* ---- Ads ---- */
+.adsBlock {
+  margin-top: clamp(64px, 11vh, 130px);
+}
+
+.ads {
+  margin-top: clamp(20px, 3vw, 36px);
+  display: grid;
+  grid-template-columns: 1.55fr 1fr;
+  gap: clamp(16px, 2.4vw, 28px);
+  align-items: start;
+}
+
+.adLandscape {
+  aspect-ratio: 16 / 9;
+  margin: 0;
+}
+
+.adPortrait {
+  aspect-ratio: 4 / 5;
+  margin: 0;
+}
+
+@media (max-width: 760px) {
+  .ads {
+    grid-template-columns: 1fr;
+  }
+}
