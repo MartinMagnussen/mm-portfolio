@@ -77,6 +77,13 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 ### Rettelser (runde 17, etter tilbakemelding)
 - **Mykt/dempet scroll for desktop (treghet):** musehjul mater nå en hastighet som blør inn i målet og decay-er, så transportbåndet glir mykt til ro i stedet for å hakke. `WHEEL_IMPULSE = 1 − friction` gjør at total scroll-distanse er uendret — kun jevnere. Touch (mobil/iPad) skriver fortsatt målet direkte og er helt upåvirket. `prefers-reduced-motion` hopper over tregheten. (Valgte lett egenutviklet treghet framfor GSAP ScrollSmoother, som er en betalt Club-plugin og uansett er laget for ekte side-scroll, ikke dette faste lerretet.)
 
+### CV-side (/cv) + nedlastbar PDF (runde 32)
+- Ny rute `/cv` (`app/cv/page.tsx` + `components/CV.tsx` + `CV.module.css`) bygd i samme designsystem som resten av siden: mørk bakgrunn, Bricolage/Archivo/Space Mono-fontene, lime-aksent og mono-labels + verdi, akkurat som prosjekt- og om-meg-sidene. Innhold hentet fra `CV-innhold-MM.md` (om meg, erfaring med tankestrek-punkter, utdanning, ferdigheter).
+- **«Last ned pdf»-knapp** laster ned en statisk PDF (`public/cv/martin-magnussen-cv.pdf`). PDF-en er foreløpig en eksport av selve `/cv`-siden, generert med headless Chrome (`--print-to-pdf`), så den matcher siden 1:1 — mørk bakgrunn, grid, fonter og lime-aksent. Byttes ut når Martin lager en egen CV.
+- **Print-stylesheet beholdt som fallback:** `@media print` reformaterer siden for A4 (`@page size: A4; margin: 0`), skjuler nav + grid-canvas + knapp, tvinger på fargene (`print-color-adjust: exact`), lar bakgrunnen blø helt ut til kanten (ingen hvit ramme), og reproduserer nettsidens grid som en CSS-bakgrunn (32px, `rgba 0.07`) siden JS-canvas-en ikke printer pålitelig.
+- Lagt «cv»-lenke i kontakt-seksjonen på om-meg-siden (samme pille-stil og glow som LinkedIn-knappen) som tar deg videre til CV-siden.
+- Verifisert i preview: desktop + mobil (header og seksjoner stables til én kolonne ≤680px), layout sammenhengende fra topp til ferdigheter; PDF serveres (200) og lenken har `download`.
+
 ### Lime glow utvidet til alle klikkbare flater (runde 31)
 - Utvidet den grønne glowen til resten av de klikkbare elementene: **arbeid-listens** preview-kort (`.preview[data-show="true"]` i ListView), **prosjektsidens** «← arbeid»-lenke (mild text-shadow) og «neste prosjekt»-bånd (inset rim + indre halo + ytre cast siden det er full-bleed), og **LinkedIn-knappen** på om-meg-siden (`.socialBtn:hover`). Alle bruker samme lagdelte `color-mix(--accent)`-mønster og fikk `box-shadow` lagt til transition-listen for myk inn/ut.
 

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import PortraitDeck from "./PortraitDeck";
 import styles from "./About.module.css";
 
@@ -73,9 +74,31 @@ export default function About() {
             ) : null}
           </dl>
 
-          {SOCIALS.length > 0 ? (
-            <div className={styles.socials}>
-              {SOCIALS.map((s) => (
+          <div className={styles.socials}>
+            {/* Internal link to the CV page, where it can be viewed or saved
+                as PDF. Shares the social-pill look (and its lime glow). */}
+            <Link href="/cv" className={`${styles.socialBtn} mono`}>
+              cv
+              <svg
+                className={styles.extIcon}
+                viewBox="0 0 24 24"
+                width="14"
+                height="14"
+                aria-hidden="true"
+              >
+                <path
+                  d="M14 3v5h5M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </Link>
+
+            {SOCIALS.length > 0 ? (
+              SOCIALS.map((s) => (
                 <a
                   key={s.href}
                   href={s.href}
@@ -103,9 +126,9 @@ export default function About() {
                   </svg>
                   <span className="visually-hidden">(åpner i ny fane)</span>
                 </a>
-              ))}
-            </div>
-          ) : null}
+              ))
+            ) : null}
+          </div>
         </section>
       </main>
     </div>
