@@ -94,7 +94,7 @@
      short transition smooths the lean as the value retargets each mousemove. */
   rotate: var(--tilt, 0deg);
   transition: opacity 0.4s var(--ease), transform 0.3s var(--ease),
-    rotate 0.3s var(--ease);
+    rotate 0.3s var(--ease), box-shadow 0.4s var(--ease);
   box-shadow: 0 40px 110px rgba(0, 0, 0, 0.6);
 }
 
@@ -104,6 +104,11 @@
   transform: translate(-50%, -50%) translate(var(--px, 0px), var(--py, 0px))
     scale(1);
   rotate: var(--tilt, 0deg);
+  /* Depth shadow + layered lime glow, matching the canvas cards. */
+  box-shadow: 0 40px 110px rgba(0, 0, 0, 0.6),
+    0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent),
+    0 0 26px color-mix(in srgb, var(--accent) 45%, transparent),
+    0 0 64px color-mix(in srgb, var(--accent) 26%, transparent);
 }
 
 @media (prefers-reduced-motion: reduce) {

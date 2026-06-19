@@ -77,6 +77,9 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 ### Rettelser (runde 17, etter tilbakemelding)
 - **Mykt/dempet scroll for desktop (treghet):** musehjul mater nå en hastighet som blør inn i målet og decay-er, så transportbåndet glir mykt til ro i stedet for å hakke. `WHEEL_IMPULSE = 1 − friction` gjør at total scroll-distanse er uendret — kun jevnere. Touch (mobil/iPad) skriver fortsatt målet direkte og er helt upåvirket. `prefers-reduced-motion` hopper over tregheten. (Valgte lett egenutviklet treghet framfor GSAP ScrollSmoother, som er en betalt Club-plugin og uansett er laget for ekte side-scroll, ikke dette faste lerretet.)
 
+### Lime glow utvidet til alle klikkbare flater (runde 31)
+- Utvidet den grønne glowen til resten av de klikkbare elementene: **arbeid-listens** preview-kort (`.preview[data-show="true"]` i ListView), **prosjektsidens** «← arbeid»-lenke (mild text-shadow) og «neste prosjekt»-bånd (inset rim + indre halo + ytre cast siden det er full-bleed), og **LinkedIn-knappen** på om-meg-siden (`.socialBtn:hover`). Alle bruker samme lagdelte `color-mix(--accent)`-mønster og fikk `box-shadow` lagt til transition-listen for myk inn/ut.
+
 ### Lime glow rundt hovret kort (runde 30)
 - La til en grønn (lime) glow rundt kortet man hovrer i canvas-visningen. Lagt på samme box-shadow som engasjert/fokusert tilstand (`[data-engaged="true"]` + `:focus-visible`), så den arver den myke transitionen og gjelder både mus (magnetisk engasjement) og tastatur. Glowen er lagdelt: en tett 1px-rim + to myke halo-lag (`color-mix` med `--accent`) oppå dybdeskyggen.
 

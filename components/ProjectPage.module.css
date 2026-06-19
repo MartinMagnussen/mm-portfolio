@@ -50,11 +50,12 @@
   align-self: flex-start;
   color: var(--muted);
   margin-bottom: clamp(12px, 3vh, 28px);
-  transition: color 0.25s var(--ease);
+  transition: color 0.25s var(--ease), text-shadow 0.25s var(--ease);
 }
 
 .back:hover {
   color: var(--accent);
+  text-shadow: 0 0 14px color-mix(in srgb, var(--accent) 60%, transparent);
 }
 
 .kicker {
@@ -185,6 +186,15 @@
   height: clamp(42vh, 52vh, 560px);
   margin-top: clamp(64px, 11vh, 130px);
   overflow: hidden;
+  transition: box-shadow 0.4s var(--ease);
+}
+
+/* Full-bleed band: an inset lime rim + inner halo read better than an outer
+   glow (which would only show at the top/bottom edges), plus a soft outer cast. */
+.next:hover {
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--accent) 60%, transparent),
+    inset 0 0 90px color-mix(in srgb, var(--accent) 20%, transparent),
+    0 0 44px color-mix(in srgb, var(--accent) 22%, transparent);
 }
 
 .nextImg {

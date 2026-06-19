@@ -117,13 +117,16 @@
   background: rgba(255, 255, 255, 0.04);
   color: var(--fg);
   transition: color 0.25s var(--ease), border-color 0.25s var(--ease),
-    background 0.25s var(--ease);
+    background 0.25s var(--ease), box-shadow 0.25s var(--ease);
 }
 
 .socialBtn:hover {
   color: var(--accent);
   border-color: var(--accent);
   background: color-mix(in srgb, var(--accent) 12%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent),
+    0 0 20px color-mix(in srgb, var(--accent) 40%, transparent),
+    0 0 44px color-mix(in srgb, var(--accent) 22%, transparent);
 }
 
 .extIcon {
