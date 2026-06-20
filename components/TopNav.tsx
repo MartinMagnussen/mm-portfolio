@@ -16,8 +16,10 @@ export default function TopNav() {
   const pathname = usePathname();
   const params = useSearchParams();
 
+  // The CV lives under "om meg" conceptually (it's linked from the about page),
+  // so /cv highlights "om meg" rather than falling through to "forside".
   const state =
-    pathname === "/om"
+    pathname === "/om" || pathname === "/cv"
       ? "om"
       : pathname.startsWith("/prosjekt") || params.get("view") === "arbeid"
         ? "arbeid"

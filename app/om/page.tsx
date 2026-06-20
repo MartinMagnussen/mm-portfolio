@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import About from "@/components/About";
 import SmoothScroll from "@/components/SmoothScroll";
+import ScrollProgress from "@/components/ScrollProgress";
 
 export const metadata: Metadata = {
   title: "Om meg",
@@ -20,6 +21,7 @@ export default function OmPage() {
   return (
     <>
       <SmoothScroll />
+      <ScrollProgress />
       <About />
     </>
   );

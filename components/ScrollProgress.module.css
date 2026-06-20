@@ -12,6 +12,13 @@
   width: var(--node);
   z-index: 24;
   pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.3s var(--ease);
+}
+
+/* Page can't scroll — fold the rail away (set from JS via data-show). */
+.rail[data-show="false"] {
+  opacity: 0;
 }
 
 /* Dim background track — a thin line down the centre of the rail. */

@@ -10,10 +10,21 @@ import styles from "./ScrollProgress.module.css";
 // CSS var (--progress 0..1) and each node toggles a data-attribute, so painting
 // stays in CSS. Decorative (aria-hidden); the real headings carry the structure.
 //
-// `sections` are element ids to anchor the nodes on. Each node sits at the scroll
-// fraction where its section reaches the read line (mid-viewport), so the fill
-// passes through a node exactly as that section comes into focus.
-export default function ScrollProgress({ sections }: { sections: string[] }) {
+// Doubles as the site's scrollbar replacement: the native bar is hidden in
+// globals.css, and this lime fill shows reading progress instead. It's an
+// overlay (position: fixed), so it never reserves layout width — content is
+// never pushed.
+//
+// `sections` are optional element ids to anchor checkpoint nodes on. Each node
+// sits at the scroll fraction where its section reaches the read line
+// (mid-viewport), so the fill passes through a node exactly as that section
+// comes into focus. Pass none (e.g. om / project pages) for a plain progress
+// rail with no checkpoints.
+export default function ScrollProgress({
+  sections = [],
+}: {
+  sections?: string[];
+}) {
   const railRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -27,15 +38,16 @@ export default function ScrollProgress({ sections }: { sections: string[] }) {
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
+    const clamp = (v: number) => Math.max(0, Math.min(1, v));
+    const maxScroll = () =>
+      document.documentElement.scrollHeight - window.innerHeight;
+
     if (reduced) {
+      rail.dataset.show = maxScroll() > 1 ? "true" : "false";
       rail.style.setProperty("--progress", "1");
       nodes.forEach((n) => (n.dataset.active = "true"));
       return;
     }
-
-    const clamp = (v: number) => Math.max(0, Math.min(1, v));
-    const maxScroll = () =>
-      document.documentElement.scrollHeight - window.innerHeight;
 
     // Each node's threshold = the scroll fraction at which its section crosses
     // the mid-viewport read line. Stored on the node and reused for the fill
@@ -57,6 +69,8 @@ export default function ScrollProgress({ sections }: { sections: string[] }) {
     const update = () => {
       raf = 0;
       const max = maxScroll();
+      // Hide the rail entirely on pages that can't scroll — no empty track.
+      rail.dataset.show = max > 1 ? "true" : "false";
       const prog = max > 0 ? clamp(window.scrollY / max) : 0;
       rail.style.setProperty("--progress", String(prog));
       nodes.forEach((node) => {
@@ -86,7 +100,7 @@ export default function ScrollProgress({ sections }: { sections: string[] }) {
   }, [sections]);
 
   return (
-    <div ref={railRef} className={styles.rail} aria-hidden="true">
+    <div ref={railRef} className={styles.rail} data-show="false" aria-hidden="true">
       <span className={styles.track} />
       <span className={styles.fill} />
       {sections.map((id) => (

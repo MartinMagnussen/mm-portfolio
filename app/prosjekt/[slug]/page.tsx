@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import ProjectPage from "@/components/ProjectPage";
 import FraSofaTilSporty from "@/components/cases/FraSofaTilSporty";
 import SmoothScroll from "@/components/SmoothScroll";
+import ScrollProgress from "@/components/ScrollProgress";
 import { projects } from "@/lib/projects";
 
 // Slugs that have a hand-built case component. Everything else falls back to the
@@ -59,6 +60,7 @@ export default async function Page({
   return (
     <>
       <SmoothScroll />
+      <ScrollProgress />
       <Case project={project} next={next} />
     </>
   );
