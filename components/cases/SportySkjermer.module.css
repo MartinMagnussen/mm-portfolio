@@ -1,0 +1,86 @@
+/* Case-specific bits for "Sporty-skjermer". Structural layout (hero, main,
+   blocks, meta, next band) is reused from ProjectPage.module.css; this file only
+   adds the featured image and the gallery of screen-ad slots. */
+
+/* ---- Placeholder frames ---- */
+/* Stand in for ad shots that aren't in yet: a faint dashed frame with a label,
+   so the page reads as intentional rather than broken. Swap each for an
+   <Image> when the finished ad arrives. */
+.slotLabel {
+  color: var(--muted-dim);
+  letter-spacing: 0.06em;
+}
+
+.placeholder {
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--card-radius);
+}
+
+/* ---- Prosessen (annonsørarbeidet) ---- */
+.processBlock {
+  margin-bottom: clamp(28px, 5vh, 48px);
+}
+
+.timelineWrap {
+  margin-top: clamp(8px, 2vh, 20px);
+  padding-left: clamp(2px, 1vw, 10px);
+}
+
+/* ---- Featured example (a real screen photo) ---- */
+.featuredWrap {
+  max-width: 1080px;
+  margin: clamp(48px, 8vh, 96px) auto 0;
+  padding: 0 clamp(20px, 5vw, 48px);
+}
+
+.featuredImg {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--card-radius);
+  border: 1px solid var(--line);
+}
+
+/* ---- Gallery of screen ads ---- */
+.galleryBlock {
+  margin-top: clamp(64px, 11vh, 130px);
+}
+
+.gallery {
+  margin-top: clamp(20px, 3vw, 36px);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(16px, 2.4vw, 28px);
+  align-items: start;
+}
+
+/* The screens are landscape, so every slot is 16:9. */
+.screen {
+  aspect-ratio: 16 / 9;
+  margin: 0;
+}
+
+/* A real ad shot in a gallery slot: the source is 16:9, so height:auto keeps
+   the natural ratio (no aspect-ratio/cover, which mis-sized it on the grid).
+   align-self:start stops the grid from stretching the figure to row height. */
+.adFigure {
+  margin: 0;
+  align-self: start;
+}
+
+.adImg {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--card-radius);
+  border: 1px solid var(--line);
+}
+
+@media (max-width: 760px) {
+  .gallery {
+    grid-template-columns: 1fr;
+  }
+}

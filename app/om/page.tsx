@@ -17,11 +17,14 @@ export const metadata: Metadata = {
   },
 };
 
+// One checkpoint per section on the page, mirroring the CV's progress rail.
+const SECTION_IDS = ["om-intro", "om-verktoy", "kontakt"];
+
 export default function OmPage() {
   return (
     <>
       <SmoothScroll />
-      <ScrollProgress />
+      <ScrollProgress sections={SECTION_IDS} />
       <About />
     </>
   );

@@ -54,12 +54,12 @@ export const projects: Project[] = [
     featured: true,
   },
   {
-    slug: "eide-bruktbil",
-    title: "Auto 8-8 — Eide Bruktbil",
-    year: "2024",
-    tag: "annonse",
-    image: "/projects/eide-bruktbil.webp",
-    gradient: "linear-gradient(135deg, #b6ff6b 0%, #21d39a 60%, #06241f 100%)",
+    slug: "sporty-skjermer",
+    title: "Sporty-skjermer",
+    year: "2025–2026",
+    tag: "skjermreklame",
+    image: "/projects/sporty-skjermer-card.webp",
+    gradient: "linear-gradient(135deg, #cfe3ff 0%, #5b8def 55%, #0b1733 100%)",
   },
   {
     slug: "sbg-helene",

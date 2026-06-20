@@ -47,6 +47,124 @@
   color: color-mix(in srgb, var(--fg) 86%, transparent);
 }
 
+/* ---- Verktøy (programs) ---- */
+.tools {
+  margin-top: clamp(72px, 14vh, 150px);
+}
+
+.toolsHeading {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.7rem, 3.6vw, 2.6rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-top: 0.2rem;
+}
+
+.toolGroups {
+  margin-top: clamp(22px, 3.4vw, 36px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(18px, 2.6vw, 28px);
+}
+
+/* Label column + chips, like the CV's skill rows. */
+.toolGroup {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: clamp(12px, 2vw, 24px);
+  align-items: start;
+}
+
+.toolGroupLabel {
+  color: var(--muted-dim);
+  padding-top: 0.55rem;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+/* Static tag — not a link, so no hover affordance. The discipline glow comes
+   from the per-domain rules below (--glow drives both border tint and halo). */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--fg);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+}
+
+/* Discipline colours — one per area the program is used in. */
+.chip[data-domain="design"],
+.legendDot[data-domain="design"] {
+  --glow: var(--accent); /* lime — design (site's primary accent) */
+}
+.chip[data-domain="bilde"],
+.legendDot[data-domain="bilde"] {
+  --glow: #c084fc; /* violet — bilde (photo) */
+}
+.chip[data-domain="video"],
+.legendDot[data-domain="video"] {
+  --glow: #2dd4bf; /* turquoise/cyan — video */
+}
+.chip[data-domain="3d"],
+.legendDot[data-domain="3d"] {
+  --glow: #ff8a3c; /* amber — 3d */
+}
+
+.chip[data-domain] {
+  border-color: color-mix(in srgb, var(--glow) 55%, transparent);
+  background: color-mix(in srgb, var(--glow) 9%, rgba(255, 255, 255, 0.04));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--glow) 22%, transparent),
+    0 0 18px color-mix(in srgb, var(--glow) 26%, transparent),
+    0 0 40px color-mix(in srgb, var(--glow) 14%, transparent);
+}
+
+/* ---- Legend (colour → discipline) ---- */
+.legend {
+  list-style: none;
+  margin: clamp(20px, 3vw, 30px) 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(14px, 2vw, 24px);
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--muted);
+}
+
+.legendDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--glow);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--glow) 70%, transparent),
+    0 0 20px color-mix(in srgb, var(--glow) 40%, transparent);
+}
+
+@media (max-width: 720px) {
+  .toolGroup {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+  .toolGroupLabel {
+    padding-top: 0;
+  }
+}
+
 /* ---- Contact ---- */
 /* No divider line: the grid is fixed to the viewport while this section
    scrolls, so a rule here can't stay aligned to it. The generous top spacing

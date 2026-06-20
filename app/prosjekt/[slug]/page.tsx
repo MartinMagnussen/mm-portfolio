@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ProjectPage from "@/components/ProjectPage";
 import FraSofaTilSporty from "@/components/cases/FraSofaTilSporty";
+import SportySkjermer from "@/components/cases/SportySkjermer";
 import SmoothScroll from "@/components/SmoothScroll";
 import ScrollProgress from "@/components/ScrollProgress";
 import { projects } from "@/lib/projects";
@@ -13,6 +14,7 @@ const CASES: Record<
   (typeof ProjectPage) | typeof FraSofaTilSporty
 > = {
   "fra-sofa-til-sporty": FraSofaTilSporty,
+  "sporty-skjermer": SportySkjermer,
 };
 
 // Pre-render one page per project at build time.

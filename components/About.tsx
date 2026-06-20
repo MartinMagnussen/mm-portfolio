@@ -12,6 +12,46 @@ const PHOTOS = [
   "/om/martin.webp",
 ];
 
+// Each program belongs to a discipline, shown as a coloured glow on its chip:
+// design (lime), video (blue) and 3d (amber). The legend below the chips maps
+// each colour back to its discipline.
+type Domain = "design" | "bilde" | "video" | "3d";
+
+const DOMAINS: { id: Domain; label: string }[] = [
+  { id: "design", label: "design" },
+  { id: "bilde", label: "bilde" },
+  { id: "video", label: "video" },
+  { id: "3d", label: "3d" },
+];
+
+// Programs grouped by how much they're used, mirroring the CV's three tiers.
+const TOOLS: { label: string; items: { name: string; domain: Domain }[] }[] = [
+  {
+    label: "bruker daglig",
+    items: [
+      { name: "Figma", domain: "design" },
+      { name: "Illustrator", domain: "design" },
+      { name: "Photoshop", domain: "bilde" },
+      { name: "Lightroom", domain: "bilde" },
+      { name: "DaVinci Resolve", domain: "video" },
+    ],
+  },
+  {
+    label: "også",
+    items: [
+      { name: "Premiere Pro", domain: "video" },
+      { name: "After Effects", domain: "video" },
+    ],
+  },
+  {
+    label: "har brukt",
+    items: [
+      { name: "Blender", domain: "3d" },
+      { name: "Unreal Engine", domain: "3d" },
+    ],
+  },
+];
+
 // Contact details live here so they're trivial to update. Email and phone are
 // shown as plain text (no mailto:/tel: links, by request); only social
 // profiles are clickable. Each renders only when filled in.
@@ -25,7 +65,7 @@ export default function About() {
   return (
     <div className={styles.root}>
       <main className={styles.main}>
-        <section className={styles.intro}>
+        <section className={styles.intro} id="om-intro">
           <PortraitDeck images={PHOTOS} alt="Martin Magnussen" />
 
           <div className={styles.bio}>
@@ -49,6 +89,46 @@ export default function About() {
               </p>
             </div>
           </div>
+        </section>
+
+        <section className={styles.tools} id="om-verktoy">
+          <p className={`${styles.kicker} mono`}>verktøy</p>
+          <h2 className={styles.toolsHeading}>Programmene jeg jobber i.</h2>
+
+          {/* Legend: each colour = a discipline, matching the glow on the chips. */}
+          <ul className={styles.legend}>
+            {DOMAINS.map((d) => (
+              <li key={d.id} className={`${styles.legendItem} mono`}>
+                <span
+                  className={styles.legendDot}
+                  data-domain={d.id}
+                  aria-hidden="true"
+                />
+                {d.label}
+              </li>
+            ))}
+          </ul>
+
+          <dl className={styles.toolGroups}>
+            {TOOLS.map((group) => (
+              <div key={group.label} className={styles.toolGroup}>
+                <dt className={`${styles.toolGroupLabel} mono`}>
+                  {group.label}
+                </dt>
+                <dd className={styles.chips}>
+                  {group.items.map((item) => (
+                    <span
+                      key={item.name}
+                      className={styles.chip}
+                      data-domain={item.domain}
+                    >
+                      {item.name}
+                    </span>
+                  ))}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </section>
 
         <section className={styles.contact} id="kontakt">
