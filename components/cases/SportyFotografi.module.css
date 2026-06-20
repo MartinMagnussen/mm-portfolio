@@ -1,0 +1,24 @@
+/* Case-specific bits for "Sporty-fotografi". Structural layout (hero, main,
+   blocks, meta, next band) is reused from ProjectPage.module.css; this file
+   adds the featured shot and the masonry photo gallery. */
+
+/* ---- Featured shot ---- */
+.featuredWrap {
+  max-width: 1080px;
+  margin: clamp(48px, 8vh, 96px) auto 0;
+  padding: 0 clamp(20px, 5vw, 48px);
+}
+
+.featuredImg {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--card-radius);
+  border: 1px solid var(--line);
+}
+
+/* ---- Gallery intro ---- */
+/* The grouped masonry + lightbox itself lives in PhotoGallery (client). */
+.galleryBlock {
+  margin-top: clamp(64px, 11vh, 130px);
+}

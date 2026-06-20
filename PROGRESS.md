@@ -2,6 +2,14 @@
 
 Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikler og designer.
 
+## TODO — gjenstår (Martins egen liste)
+Ting Martin selv må gjøre. Når han spør «hva må jeg gjøre?», er det dette som gjelder.
+- [ ] **Bytt ut bilder som egentlig skal være video** (flere kort/seksjoner viser stillbilde der det burde vært bevegelse).
+- [ ] **Legg til alternative bildeforhold** for bilder (portrett/landskap/ultrabredt-varianter via `ArtImage`).
+- [ ] **Legg til mindre og større versjoner for subload** (responsiv nedlasting — små for mobil, store for skjerm).
+- [ ] **Fullfør alle prosjektsider** (gjenstående caser er fortsatt placeholder eller delvis).
+- [ ] **Oppdater CV-PDF** (den nedlastbare PDF-en på /cv).
+
 ## Status: Fase 1 — Forside ✅ FERDIG (venter på godkjenning)
 
 ### Fase 1 — Forside
@@ -76,6 +84,17 @@ Porteføljenettside for Martin Magnussen (brand: **MM**). Kreativ konseptutvikle
 
 ### Rettelser (runde 17, etter tilbakemelding)
 - **Mykt/dempet scroll for desktop (treghet):** musehjul mater nå en hastighet som blør inn i målet og decay-er, så transportbåndet glir mykt til ro i stedet for å hakke. `WHEEL_IMPULSE = 1 − friction` gjør at total scroll-distanse er uendret — kun jevnere. Touch (mobil/iPad) skriver fortsatt målet direkte og er helt upåvirket. `prefers-reduced-motion` hopper over tregheten. (Valgte lett egenutviklet treghet framfor GSAP ScrollSmoother, som er en betalt Club-plugin og uansett er laget for ekte side-scroll, ikke dette faste lerretet.)
+
+### Nytt prosjekt: Sporty-fotografi (runde 41)
+- **La til prosjektet «Sporty-fotografi»** i `lib/projects.ts` (slug `sporty-fotografi`, tag «fotografi», år «2024–nå», varm gradient), plassert etter Sporty-skjermer.
+- **Checkpoints for grupperingene:** progresjonsrailen (`ScrollProgress`) får nå ett checkpoint per galleri-gruppe på denne siden. Hver gruppe-`<section>` har en `id` (`galleri-ansatte`/`galleri-sekken`/`galleri-helene`), `SECTION_IDS` eksporteres fra case-en, og `app/prosjekt/[slug]/page.tsx` sender dem til `ScrollProgress` via et `CASE_SECTIONS`-oppslag (andre caser får fortsatt rail uten checkpoints).
+- **Dedikert case-side** `components/cases/SportyFotografi.tsx` (+ `.module.css`), registrert i `CASES`. Bygd som et galleri-drevet fotoshowcase med Martins tekst: ingress, «tilnærmingen» (Personen, ikke posituren), ett fremhevet bilde, «blikket» (Egne bilder, ett uttrykk) og «utvalget» som leder rett inn i galleriet.
+- **Justert rad-galleri (justified rows) + lightbox:** ny klientkomponent `components/PhotoGallery.tsx` (+ `.module.css`) viser bildene i tre grupper, slik kildemappene var organisert — «ansatte» (løse portretter), «sporty-sekken» (produktfoto) og «helene» — hver med sin egen lille etikett. Hver gruppe er et **justert rad-oppsett**: hver rad fyller hele innholdsbredden, alle bilder i en rad deler én høyde, og hvert bilde beholder ~sitt eget bildeforhold. Liggende leses bredt og lavt, stående smalt, og nær-kvadratiske tar mer bredde (færre per rad). Ingen faste 3:4/4:3-rammer, ingen tomme mellomrom. Rent CSS (`flex-grow`/`flex-basis` ∝ bildeforhold satt inline per celle), så det er SSR-trygt og reflower ved resize uten JS-layout.
+  - Radhøyde styres per gruppe via `size`-feltet på `PhotoGroup` (`sm`/`md`/`lg` → `--row-h`-clamp). «sporty-sekken» = `lg` (stående → ~4–5 per rad), «ansatte» og «helene» = `md`.
+  - Trykk på et bilde → fullskjerm-lightbox (mørk, blur) med ←/→/Esc/klikk-utenfor som blar gjennom alle bildene på tvers av grupper, scroll-lås, hover-zoom, `prefers-reduced-motion` respektert.
+- **Klikk for fullskjerm:** hvert bilde er en knapp som åpner en fullskjerm-lightbox (mørk, blur-bakgrunn) med navigasjon — Esc/klikk-utenfor lukker, ←/→ (taster + knapper) blar gjennom alle bildene på tvers av grupper, scroll låses mens den er åpen. Hover-zoom på miniatyrene, alt respekterer `prefers-reduced-motion`.
+- **Bilder:** forsidebilde/hero fra `P1044675-2`, fremhevet bilde under «tilnærmingen» er `P1067566`. Alle utvalgte bilder (løse + undermappene «Helene SBD Innhold» og «Sporty sekken») konvertert til webp (maks 1600px) via `sharp` til `public/projects/sporty-fotografi/` (med `helene/` og `sekken/` undermapper) + `sporty-fotografi-card.webp`. Hero-coveret og det fremhevede bildet er utelatt fra galleriet for å unngå gjentakelse.
+- Verifisert: `npm run build` ✅ (sporty-fotografi-siden genereres), eslint rent.
 
 ### Sporty-skjermer-tekst + disiplin-glow på verktøy + checkpoints på om-siden (runde 40)
 - **Ekte tekst på Sporty-skjermer-siden:** byttet ut placeholder-kopien med Martins egen tekst — ingress, «utfordringen» (En kanal som aldri tar pause), «rollen» (Fra å sette opp skjermene til å fylle dem), og «prosessen — annonsørarbeidet» bygget som en scroll-drevet `ProcessTimeline` med fem steg (01 Briefen, 02 Innsikten, 03 Budskapet, 04 Produksjonen, 05 Godkjenningen), pluss «resultatet» (Byråarbeid i miniatyr). La til `.processBlock`/`.timelineWrap` i case-CSS-en.

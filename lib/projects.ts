@@ -62,6 +62,14 @@ export const projects: Project[] = [
     gradient: "linear-gradient(135deg, #cfe3ff 0%, #5b8def 55%, #0b1733 100%)",
   },
   {
+    slug: "sporty-fotografi",
+    title: "Sporty-fotografi",
+    year: "2024–nå",
+    tag: "fotografi",
+    image: "/projects/sporty-fotografi-card.webp",
+    gradient: "linear-gradient(135deg, #f0d9c0 0%, #c98a5b 55%, #2a1a10 100%)",
+  },
+  {
     slug: "sbg-helene",
     title: "SBG — video med Helene",
     year: "2024",

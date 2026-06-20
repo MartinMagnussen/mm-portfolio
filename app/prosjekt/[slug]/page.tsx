@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import ProjectPage from "@/components/ProjectPage";
 import FraSofaTilSporty from "@/components/cases/FraSofaTilSporty";
 import SportySkjermer from "@/components/cases/SportySkjermer";
+import SportyFotografi, {
+  SECTION_IDS as sportyFotografiSections,
+} from "@/components/cases/SportyFotografi";
 import SmoothScroll from "@/components/SmoothScroll";
 import ScrollProgress from "@/components/ScrollProgress";
 import { projects } from "@/lib/projects";
@@ -15,6 +18,13 @@ const CASES: Record<
 > = {
   "fra-sofa-til-sporty": FraSofaTilSporty,
   "sporty-skjermer": SportySkjermer,
+  "sporty-fotografi": SportyFotografi,
+};
+
+// Reading-progress checkpoints per case (element ids present in that page).
+// Cases without an entry get a plain rail with no checkpoints.
+const CASE_SECTIONS: Record<string, string[]> = {
+  "sporty-fotografi": sportyFotografiSections,
 };
 
 // Pre-render one page per project at build time.
@@ -62,7 +72,7 @@ export default async function Page({
   return (
     <>
       <SmoothScroll />
-      <ScrollProgress />
+      <ScrollProgress sections={CASE_SECTIONS[slug] ?? []} />
       <Case project={project} next={next} />
     </>
   );
