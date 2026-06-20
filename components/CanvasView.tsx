@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import { projectHref, type Project } from "@/lib/projects";
 import GridGlow from "./GridGlow";
@@ -29,10 +30,17 @@ const WHEEL_FRICTION = 0.93; // desktop scroll inertia: higher = longer glide
 const WHEEL_IMPULSE = 1 - WHEEL_FRICTION; // keeps total scroll distance unchanged
 
 export default function CanvasView({ projects }: { projects: Project[] }) {
+  const router = useRouter();
   const viewportRef = useRef<HTMLDivElement>(null);
   const fieldRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  // The index of the card the cursor is currently locked onto (the one that's
+  // glowing), mirrored out of the rAF loop so the click handler can navigate to
+  // it without relying on the browser's native <a> hit-testing — that's
+  // unreliable inside the preserve-3d / perspective space and was the reason
+  // clicks "did nothing" on skewed cards lower on screen.
+  const engagedRef = useRef(-1);
 
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -120,6 +128,7 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
         }
       }
       hovering = engaged !== -1;
+      engagedRef.current = engaged;
 
       // Magnetic pull: strongest near the card centre, zero past the radius.
       for (let i = 0; i < n; i++) {
@@ -265,8 +274,24 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
     function onPointerLeave() {
       ptr.inside = false;
     }
+    // Navigate from the engaged card, not from where the click physically lands.
+    // The glow already pinpoints the card under the cursor; tying the click to it
+    // means "if it glows, clicking opens it" — and sidesteps the unreliable
+    // native hit-testing on 3D-skewed cards. Plain left-clicks only: cmd/ctrl/
+    // shift-clicks and middle-clicks fall through to the real <a> so "open in new
+    // tab" still works, and keyboard activation (engaged === -1) uses the anchor.
+    function onClick(e: MouseEvent) {
+      if (coarse) return; // touch taps go through the native <a>
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey)
+        return;
+      const i = engagedRef.current;
+      if (i === -1) return;
+      e.preventDefault();
+      router.push(projectHref(projects[i % projects.length].slug));
+    }
     viewport.addEventListener("pointermove", onPointerMove);
     viewport.addEventListener("pointerleave", onPointerLeave);
+    viewport.addEventListener("click", onClick);
 
     const SENS = 0.00058;
     function onWheel(e: WheelEvent) {
@@ -320,11 +345,12 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
       gsap.ticker.remove(render);
       viewport.removeEventListener("pointermove", onPointerMove);
       viewport.removeEventListener("pointerleave", onPointerLeave);
+      viewport.removeEventListener("click", onClick);
       viewport.removeEventListener("wheel", onWheel);
       viewport.removeEventListener("touchstart", onTouchStart);
       viewport.removeEventListener("touchmove", onTouchMove);
     };
-  }, [projects]);
+  }, [projects, router]);
 
   // Fill the loop at a fixed spacing. When there aren't enough projects we
   // duplicate them so the gap between cards stays constant instead of
