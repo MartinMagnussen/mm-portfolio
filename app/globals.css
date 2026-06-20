@@ -81,6 +81,14 @@ button {
   text-transform: lowercase;
 }
 
+/* When the custom cursor (Cursor.tsx) is active, hide the native one — the !important
+   overrides per-element cursors (e.g. button's `cursor: pointer`). Only added on
+   fine pointers without reduced-motion, so touch/keyboard users are unaffected. */
+html.has-cursor,
+html.has-cursor * {
+  cursor: none !important;
+}
+
 :focus-visible {
   outline: 2px solid var(--fg);
   outline-offset: 3px;

@@ -9,7 +9,7 @@ const GRID = 32; // cell size in px (keep in sync with --grid)
 const RADIUS = 4; // glow reach, in cells (smaller, tighter spotlight)
 const MAX_ALPHA = 0.22; // brightest (cursor) cell fill
 const LINE_ALPHA = 0.07; // static grid lines (matches --line)
-const EASE = 1; // 1 = glow tracks the cursor instantly (no trailing delay)
+const EASE = 0.07; // glow trails the cursor at half the square's speed (DOT_SPEED 0.14 → 2× slower)
 const GLOW_RGB = "186, 255, 24"; // accent (#baff18) tint for the lit cells
 
 // Touch devices have no hovering cursor, so instead of teleporting the glow to

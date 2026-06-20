@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Project } from "@/lib/projects";
+import ArtImage from "./ArtImage";
 import styles from "./ProjectPage.module.css";
 
 // Placeholder case template. Only the LAYOUT and VISUALS are meant to be reused
@@ -18,13 +19,11 @@ export default function ProjectPage({
     <article className={styles.root}>
       {/* ---- Hero band ---- */}
       <header className={styles.hero}>
-        <Image
+        <ArtImage
           className={styles.heroImg}
           src="/projects/case/hero.webp"
           alt={`${project.title} — hovedbilde`}
-          fill
           priority
-          sizes="100vw"
         />
         <div className={styles.heroScrim} aria-hidden="true" />
         <div className={styles.heroInner}>
@@ -154,13 +153,7 @@ export default function ProjectPage({
         className={styles.next}
         aria-label={`Neste prosjekt: ${next.title}`}
       >
-        <Image
-          className={styles.nextImg}
-          src="/projects/case/teaser.webp"
-          alt=""
-          fill
-          sizes="100vw"
-        />
+        <ArtImage className={styles.nextImg} src="/projects/case/teaser.webp" alt="" />
         <div className={styles.nextScrim} aria-hidden="true" />
         <div className={styles.nextInner}>
           <p className={`${styles.kicker} mono`}>neste prosjekt</p>

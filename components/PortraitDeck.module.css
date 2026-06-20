@@ -33,6 +33,14 @@
   object-fit: cover;
 }
 
+/* Lime glow on hover — only the front (top) card, matching the interactive cue
+   used elsewhere. Layered over the existing depth shadow. */
+.stack:hover .top {
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5),
+    0 0 0 1px color-mix(in srgb, var(--accent) 50%, transparent),
+    0 0 30px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
 /* ---- Indicator dots (squares) ---- */
 .dots {
   position: absolute;

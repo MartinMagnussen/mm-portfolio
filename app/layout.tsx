@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { Bricolage_Grotesque, Archivo, Space_Mono } from "next/font/google";
 import GridGlow from "@/components/GridGlow";
 import TopNav from "@/components/TopNav";
+import Cursor from "@/components/Cursor";
 import "./globals.css";
 
 const display = Bricolage_Grotesque({
@@ -70,6 +71,8 @@ export default function RootLayout({
           <TopNav />
         </Suspense>
         {children}
+        {/* Custom two-square cursor (fine pointers only; native cursor otherwise). */}
+        <Cursor />
       </body>
     </html>
   );

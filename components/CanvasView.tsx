@@ -46,6 +46,13 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
+    // Touch / hover-less pointers. On these the spiral's autonomous drift made
+    // cards a moving target that was hard to tap, so idle motion and pointer
+    // magnetism are disabled — cards rest until the finger actually scrolls.
+    const coarse = window.matchMedia(
+      "(hover: none), (pointer: coarse)",
+    ).matches;
+
     const wrap = (v: number) => ((v % 1) + 1) % 1;
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
@@ -91,7 +98,7 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
       let engagedND = Infinity;
       let engDx = 0;
       let engDy = 0;
-      if (ptr.inside) {
+      if (ptr.inside && !coarse) {
         // Rects reflect last frame's transforms — close enough for proximity,
         // and reading them all up front avoids interleaved read/write thrash.
         const rects = cards.map((c) => c.getBoundingClientRect());
@@ -129,8 +136,9 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
       }
 
       // Idle motion (drift, sway, path rotation) pauses while inspecting a card.
+      // On touch it's off entirely so cards stay put and are easy to tap.
       // Scrolling is explicit, so the smoothing toward `target` always runs.
-      const idle = !hovering && !reduced;
+      const idle = !hovering && !reduced && !coarse;
       if (idle) {
         target += AUTO;
         swayT += deltaTime;
@@ -177,7 +185,6 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
           ? lerp(yExtent, -yExtent, lp)
           : lerp(-yExtent, yExtent, lp);
         const x = front ? swing * ampX : backX + swing * ampX * 0.7;
-        const z = front ? 0 : -BACK_DEPTH;
 
         // Fade by vertical position so cards melt away before the screen edge
         // (which also hides the off-screen lane swap).
@@ -188,6 +195,19 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
         );
         // Biggest through the middle height, just like before.
         const midV = Math.max(0, 1 - ay / (vh * 0.5));
+
+        // Stable paint order. The return lane sits well behind (z = -BACK_DEPTH);
+        // the front lane lives near z = 0. Within the front lane we rank by the
+        // card's progress along the lane (`lp`), NOT by how central it is — every
+        // card advances at the same rate, so the lp-gap between any two cards is
+        // constant and their relative order never swaps while both are on screen.
+        // (The only rank jumps happen at the lane hand-offs past the top/bottom
+        // edges, where the card has already faded to zero.) Cards lower in the
+        // lane (just entered) sit in front and recede as they rise — so a card
+        // keeps the order it had when it first came into view. The ≤4px depth
+        // nudge is what `preserve-3d` actually sorts on; it's nil against the
+        // 1400px perspective. zIndex mirrors it for browsers that still use it.
+        const z = front ? (1 - lp) * 4 : -BACK_DEPTH;
 
         // Pick the most prominent front card to drive the backdrop image.
         if (front && vis * midV > frontBest) {
@@ -213,7 +233,12 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
         el.style.opacity = `${Math.max(opacity, 0)}`;
         el.style.filter = blur > 0.05 ? `blur(${blur.toFixed(2)}px)` : "none";
         // Front lane sits over the return lane; engaged card clears everything.
-        el.style.zIndex = isEng ? "9999" : front ? "1000" : "400";
+        // Front cards are ranked by (1 - lp) to match the depth nudge above, so
+        // the visual stacking and the hit-test order agree — this is also what
+        // stops a card that's painted behind from intercepting clicks meant for
+        // the one in front.
+        const frontZ = 1000 + Math.round((1 - lp) * 1000);
+        el.style.zIndex = isEng ? "9999" : front ? `${frontZ}` : "400";
         el.dataset.engaged = isEng ? "true" : "false";
         // Only front-lane, visible cards stay interactive. Return-lane cards are
         // purely decorative — never clickable or hoverable.
@@ -256,12 +281,32 @@ export default function CanvasView({ projects }: { projects: Project[] }) {
       }
     }
 
+    // A touch only starts scrolling the conveyor once the finger has travelled
+    // past TAP_SLOP. Below that it's treated as a tap: we never preventDefault
+    // and never move the cards, so the link under the finger reliably fires its
+    // click (previously the slightest jitter scrolled the card out from under
+    // the finger and swallowed the tap).
+    const TAP_SLOP = 10; // px
     let lastY = 0;
+    let startX = 0;
+    let startY = 0;
+    let touchScrolling = false;
     function onTouchStart(e: TouchEvent) {
       lastY = e.touches[0].clientY;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      touchScrolling = false;
     }
     function onTouchMove(e: TouchEvent) {
       const y = e.touches[0].clientY;
+      const x = e.touches[0].clientX;
+      if (!touchScrolling) {
+        if (Math.hypot(x - startX, y - startY) < TAP_SLOP) return; // still a tap
+        // Crossed the threshold → become a scroll. Reset the baseline so the
+        // first scroll step isn't a jump of the whole slop distance.
+        touchScrolling = true;
+        lastY = y;
+      }
       target += (lastY - y) * 0.0016;
       lastY = y;
       e.preventDefault();

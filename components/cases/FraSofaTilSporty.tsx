@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Project } from "@/lib/projects";
+import ArtImage from "../ArtImage";
 import ProcessTimeline, { type ProcessStep } from "../ProcessTimeline";
 import shared from "../ProjectPage.module.css";
 import styles from "./FraSofaTilSporty.module.css";
@@ -50,13 +51,13 @@ export default function FraSofaTilSporty({
     <article className={shared.root}>
       {/* ---- Hero band ---- */}
       <header className={shared.hero}>
-        <Image
+        <ArtImage
           className={shared.heroImg}
           src={project.image}
+          portrait={project.imagePortrait}
+          ultrawide={project.imageUltrawide}
           alt={`${project.title} — hovedbilde`}
-          fill
           priority
-          sizes="100vw"
         />
         <div className={shared.heroScrim} aria-hidden="true" />
         <div className={shared.heroInner}>
@@ -183,12 +184,12 @@ export default function FraSofaTilSporty({
         className={shared.next}
         aria-label={`Neste prosjekt: ${next.title}`}
       >
-        <Image
+        <ArtImage
           className={shared.nextImg}
           src={next.image}
+          portrait={next.imagePortrait}
+          ultrawide={next.imageUltrawide}
           alt=""
-          fill
-          sizes="100vw"
         />
         <div className={shared.nextScrim} aria-hidden="true" />
         <div className={shared.nextInner}>

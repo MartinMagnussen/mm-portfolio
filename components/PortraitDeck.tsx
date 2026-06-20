@@ -37,7 +37,7 @@ export default function PortraitDeck({
           return (
             <span
               key={i}
-              className={styles.card}
+              className={`${styles.card}${rel === 0 ? ` ${styles.top}` : ""}`}
               style={{
                 transform: `translate(${tx}px, ${ty}px) rotate(${rot}deg) scale(${scale})`,
                 zIndex: n - rel,

@@ -10,8 +10,16 @@ export type Project = {
   title: string;
   year: string;
   tag: string;
-  /** Web-ready thumbnail in /public/projects. */
+  /** Web-ready thumbnail in /public/projects — the 16:9 base used everywhere. */
   image: string;
+  /**
+   * Optional art-direction variants of `image` for the full-bleed hero / next
+   * bands, so they don't crop-zoom on very wide or portrait viewports. Drop the
+   * files in /public/projects and point these at them; until then the bands fall
+   * back to `image`. Convention: foo-portrait.webp (9:16), foo-ultrawide.webp.
+   */
+  imagePortrait?: string; // 9:16, shown on phones
+  imageUltrawide?: string; // 21:9 / 32:9, shown on big monitors
   /** CSS background shown behind/while the image loads (and as a fallback). */
   gradient: string;
   featured?: boolean;

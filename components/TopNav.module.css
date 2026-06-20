@@ -28,7 +28,12 @@
 
 .logo span {
   display: inline-block;
-  transition: transform 0.4s var(--ease);
+  transition: transform 0.4s var(--ease), text-shadow 0.3s var(--ease);
+}
+
+/* Letters glow on hover, matching the rest of the site's lime interactive cue. */
+.logo:hover span {
+  text-shadow: 0 0 14px color-mix(in srgb, var(--accent) 65%, transparent);
 }
 
 .logo:hover span:first-child {
@@ -62,6 +67,16 @@
   -webkit-backdrop-filter: blur(20px) saturate(1.8);
   box-shadow: 0 12px 38px rgba(0, 0, 0, 0.34),
     inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+
+/* The whole bar lights up with the lime accent on hover. */
+.toggle:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, rgba(255, 255, 255, 0.22));
+  box-shadow: 0 12px 38px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 0 0 1px color-mix(in srgb, var(--accent) 28%, transparent),
+    0 0 22px color-mix(in srgb, var(--accent) 26%, transparent);
 }
 
 /* The highlight lozenge that slides between the three labels. No blur of its

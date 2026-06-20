@@ -1,0 +1,16 @@
+/* Fills its (positioned) parent band exactly like next/image `fill` did, so the
+   hero / next-project layouts are unchanged — only the source is now art-directed
+   per viewport. The inner <img> covers the band; with an aspect-matched source
+   that cover crops little to nothing. */
+.picture {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}

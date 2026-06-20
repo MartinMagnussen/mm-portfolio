@@ -1,0 +1,34 @@
+/* The custom cursor square. Positioned/sized entirely from JS (transform), so
+   this file only sets appearance + the show/hide fade. transform is intentionally
+   NOT transitioned — it's lerped per frame in Cursor.tsx. */
+
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483646;
+  pointer-events: none;
+}
+
+.dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  transform-origin: center center;
+  opacity: 0;
+  will-change: transform;
+}
+
+/* Fade in once the first pointer move has placed it. */
+.root[data-ready="true"] .dot {
+  opacity: 1;
+}
+
+/* Small solid square — the brand-lime "pointer". */
+.dot {
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 55%, transparent);
+  transition: opacity 0.3s var(--ease);
+}
