@@ -1,0 +1,90 @@
+/* Fixed vertical scroll-progress rail. Shares the ProcessTimeline look: a dim
+   track, a lime glow fill keyed to --progress, and checkpoint nodes that light
+   up as the fill passes them. Pinned to the right edge, vertically centred. */
+.rail {
+  --progress: 0;
+  --node: 12px;
+  position: fixed;
+  top: 50%;
+  right: clamp(18px, 2.4vw, 40px);
+  transform: translateY(-50%);
+  height: min(58vh, 520px);
+  width: var(--node);
+  z-index: 24;
+  pointer-events: none;
+}
+
+/* Dim background track — a thin line down the centre of the rail. */
+.track {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  transform: translateX(-50%);
+  background: var(--line-strong);
+  border-radius: 2px;
+}
+
+/* Lime glow fill — grows from the top as --progress climbs. */
+.fill {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 2px;
+  height: calc(100% * var(--progress));
+  transform: translateX(-50%);
+  background: var(--accent);
+  border-radius: 2px;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 70%, transparent),
+    0 0 18px color-mix(in srgb, var(--accent) 45%, transparent);
+  transition: height 0.1s linear;
+  will-change: height;
+}
+
+/* Checkpoint node, centred on the track at its section's scroll fraction
+   (inline `top` set from JS). transform keeps it centred on that point. */
+.node {
+  position: absolute;
+  left: 50%;
+  width: var(--node);
+  height: var(--node);
+  transform: translate(-50%, -50%);
+  border-radius: 3px; /* soft square — matches the site's square motif */
+  background: var(--bg);
+  border: 2px solid var(--line-strong);
+  transition: border-color 0.35s var(--ease), box-shadow 0.35s var(--ease),
+    background 0.35s var(--ease);
+}
+
+.node[data-active="true"] {
+  border-color: var(--accent);
+  background: var(--accent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent),
+    0 0 14px color-mix(in srgb, var(--accent) 55%, transparent),
+    0 0 30px color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+/* The rail crowds narrow viewports (and the CV stacks to one column there), so
+   hide it — the headings still carry the structure. */
+@media (max-width: 900px) {
+  .rail {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fill {
+    transition: none;
+  }
+  .node {
+    transition: none;
+  }
+}
+
+/* Never print the rail into the PDF export. */
+@media print {
+  .rail {
+    display: none !important;
+  }
+}

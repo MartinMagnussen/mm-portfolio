@@ -1,4 +1,10 @@
+import ScrollProgress from "./ScrollProgress";
+import SmoothScroll from "./SmoothScroll";
 import styles from "./CV.module.css";
+
+// Ids the scroll-progress rail anchors its checkpoint nodes to — one per CV
+// section, in document order.
+const SECTION_IDS = ["cv-om", "cv-erfaring", "cv-utdanning", "cv-ferdigheter"];
 
 // On-screen CV in the site's design system. The "last ned pdf" button links to
 // a static PDF in /public (a temporary export of this same page, generated with
@@ -90,6 +96,9 @@ const SKILLS: { label: string; value: string }[] = [
 export default function CV() {
   return (
     <div className={styles.root}>
+      <SmoothScroll />
+      <ScrollProgress sections={SECTION_IDS} />
+
       {/* Floating action — downloads the static PDF; hidden when printing. */}
       <div className={styles.actions}>
         <a
@@ -142,7 +151,7 @@ export default function CV() {
         </div>
 
         {/* ---- Om meg ---- */}
-        <section className={styles.section}>
+        <section className={styles.section} id="cv-om">
           <p className={`${styles.label} mono`}>om meg</p>
           <div className={styles.sectionBody}>
             <p className={styles.lead}>{ABOUT}</p>
@@ -150,7 +159,7 @@ export default function CV() {
         </section>
 
         {/* ---- Erfaring ---- */}
-        <section className={styles.section}>
+        <section className={styles.section} id="cv-erfaring">
           <p className={`${styles.label} mono`}>erfaring</p>
           <div className={styles.sectionBody}>
             {EXPERIENCE.map((role) => (
@@ -174,7 +183,7 @@ export default function CV() {
         </section>
 
         {/* ---- Utdanning ---- */}
-        <section className={styles.section}>
+        <section className={styles.section} id="cv-utdanning">
           <p className={`${styles.label} mono`}>utdanning</p>
           <div className={styles.sectionBody}>
             <div className={styles.role}>
@@ -190,7 +199,7 @@ export default function CV() {
         </section>
 
         {/* ---- Ferdigheter ---- */}
-        <section className={styles.section}>
+        <section className={styles.section} id="cv-ferdigheter">
           <p className={`${styles.label} mono`}>ferdigheter</p>
           <div className={styles.sectionBody}>
             <dl className={styles.skills}>
