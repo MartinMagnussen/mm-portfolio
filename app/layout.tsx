@@ -4,6 +4,7 @@ import { Bricolage_Grotesque, Archivo, Space_Mono } from "next/font/google";
 import GridGlow from "@/components/GridGlow";
 import TopNav from "@/components/TopNav";
 import Cursor from "@/components/Cursor";
+import ScrollBar from "@/components/ScrollBar";
 import "./globals.css";
 
 const display = Bricolage_Grotesque({
@@ -71,6 +72,9 @@ export default function RootLayout({
           <TopNav />
         </Suspense>
         {children}
+        {/* Custom overlay scrollbar — native bar is hidden in globals.css so it
+            never pushes content; works the same across browsers. */}
+        <ScrollBar />
         {/* Custom two-square cursor (fine pointers only; native cursor otherwise). */}
         <Cursor />
       </body>

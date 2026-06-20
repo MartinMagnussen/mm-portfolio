@@ -20,6 +20,11 @@ export default function SmoothScroll() {
 
     const lenis = new Lenis({ lerp: 0.09, smoothWheel: true });
 
+    // Expose the instance so the custom scrollbar (ScrollBar.tsx) can drive
+    // drag-to-scroll through Lenis instead of window.scrollTo — otherwise a
+    // drag would fight the smooth-scroll engine. Cleared on unmount.
+    (window as unknown as { __lenis?: Lenis }).__lenis = lenis;
+
     let raf = 0;
     const loop = (time: number) => {
       lenis.raf(time);
@@ -30,6 +35,7 @@ export default function SmoothScroll() {
     return () => {
       cancelAnimationFrame(raf);
       lenis.destroy();
+      delete (window as unknown as { __lenis?: Lenis }).__lenis;
     };
   }, []);
 

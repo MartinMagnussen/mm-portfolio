@@ -28,6 +28,17 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  /* Hide the native scrollbar across browsers — a custom overlay scrollbar
+     (ScrollBar.tsx) replaces it. Hiding it (rather than restyling
+     ::-webkit-scrollbar) means it never reserves layout width, so content is
+     never pushed when the page becomes scrollable. */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* legacy Edge / IE */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, modern Edge (Blink / WebKit) */
 }
 
 /* Lenis smooth scroll (mounted per-page via SmoothScroll.tsx). These are the
