@@ -85,6 +85,43 @@ Ting Martin selv må gjøre. Når han spør «hva må jeg gjøre?», er det dett
 ### Rettelser (runde 17, etter tilbakemelding)
 - **Mykt/dempet scroll for desktop (treghet):** musehjul mater nå en hastighet som blør inn i målet og decay-er, så transportbåndet glir mykt til ro i stedet for å hakke. `WHEEL_IMPULSE = 1 − friction` gjør at total scroll-distanse er uendret — kun jevnere. Touch (mobil/iPad) skriver fortsatt målet direkte og er helt upåvirket. `prefers-reduced-motion` hopper over tregheten. (Valgte lett egenutviklet treghet framfor GSAP ScrollSmoother, som er en betalt Club-plugin og uansett er laget for ekte side-scroll, ikke dette faste lerretet.)
 
+### Sporty Rebrand: byttet til rene brand-eksporter (runde 46)
+- **Erstattet syv bilder med ferske, kantfrie eksporter** fra Martins «Nye bilder»-mappe. De gamle versjonene hadde hvit canvas/avrundede hjørner og måtte croppes (runde 45); de nye er rene full-bleed-eksporter uten fremmede kanter, så croppingen er ikke lenger nødvendig. Konvertert PNG → webp (kvalitet 88) via `sharp` og overskrevet i `public/projects/sporty-rebrand/`: `poster-red` (1836×2592), `poster-purple`/`poster-cream`/`poster-green` (1665×2352), `logo-symbol` + `logo-detail` (1770×1266), `can` (3546×2850).
+- **Boksen er nå et liggende mockup** (var stående): verifiserte at den kvadratiske 1:1-cover-rammen i Mønster-paret fortsatt holder hele boksen + «SPORTY ENERGY»-trykket sentrert etter beskjæring. Bildedimensjonene (`width`/`height`) i `SportyRebrand.tsx` oppdatert for alle syv, så Next/Image reserverer riktig plass. Build + lint rene (eneste lint-feil er en eksisterende i `Intro.tsx`, urørt).
+
+### Rettelser Sporty Rebrand: bildekanter + justering (runde 45)
+- **Croppet bort fremmede kanter/hjørner:** alle åtte brand-bildene hadde en hvit canvas bak et avrundet «kort» (radius ~12–18px) som lakk fram i hjørnene (tydeligst på plakatene). Detektert hjørneradius programmatisk og croppet hvert bilde innover forbi radiusen via `sharp .extract()`, så bildene nå har rette kanter og CSS-radiusen klipper rent. Verifisert pikselvis (ingen hvite hjørner igjen). Bildedimensjoner i komponenten oppdatert til de nye størrelsene.
+- **Fikset feiljustering («innhold lå lenger til høyre»):** `.media` og `.typoGrid` lå inni `<main class="main">` (som allerede gir max-width 1080 + auto-sentrering + sidepadding), men gjentok alt dette selv → dobbel innrykk, så bildene lå lenger til høyre enn tekstkolonnen. Fjernet duplikatet (`width:100%`, ingen ekstra padding/margin), så bilder nå flukter med tekstens venstrekant og dekker full innholdsbredde.
+- **Bilder ved siden av hverandre linjer opp i høyde:** Mønster-paret (liggende mønsterdetalj + stående boks) hadde ulikt format → ulik høyde. Tvinger nå felles kvadratisk ramme (`aspect-ratio:1/1`, `object-fit:cover`) så de to kolonnene blir nøyaktig like høye (boksen beholder hele kroppen + logoen, mønsterdetaljen fokuserer på figur + halvtone). Fargeplakatene (3 stk) har allerede identisk format og linjer opp.
+
+### Nytt prosjekt: Sporty Rebrand — flaggskipet (runde 44)
+- **Dedikert, identitets-drevet case-side** `components/cases/SportyRebrand.tsx` (+ `.module.css`), registrert i `CASES` og `CASE_SECTIONS`. Det største prosjektet: total rebranding som samlet fire kjeder (Aktiv Trening, Aktiv365, Sporty24, Family Sports Club) under én merkevare. Bygd på Martins tekst: ingress, «utfordringen» (Fire merkevarer, ett uttrykk), «min rolle» (idéen som utløste rebrandingen), og to store kapitler.
+- **Kapittel 1 – «Identiteten»:** fire merkede fasetter — Logo (logosymbol-bilde), Typografi (kodet type-spec: PP Right Grotesk Spatial + GT Walsheim Pro, med rød plakat som display-eksempel), Farger (levende CSS-swatches fra ekte hex: #F23A3D, #420001, + tre støttefarger #D1B2FA/#F9DECD/#B9E7B2, med samme plakat i tre fargevarianter), og Mønster (halvtone fra logoen + Sporty Energy-boks).
+- **Kapittel 2 – «Systemet i bruk»:** Brandfoto & profilbilder (fire ansattportretter gjenbrukt fra fotograferingen), Malverk (Canva Teams — tekstfasett, mangler eget bilde), og Plakatering (trykt plakat/flyer). Avsluttes med «resultatet» (57-siders brand guide, levende merkevare).
+- **Assets:** ni brand-PNG-er konvertert til webp via `sharp` til `public/projects/sporty-rebrand/` (logo-symbol, logo-detail, can, poster-red, poster-flyer, poster-purple/cream/green). Kortbildet `sporty-rebrand.webp` byttet til brand-forsiden (logo på dyp rød). Støttefarge-hex samplet fra plakatene via `sharp .extract().stats()`.
+- **Checkpoints:** progresjonsrailen får checkpoints på de to kapitlene + resultatet (`SECTION_IDS = ["identiteten","systemet","resultatet"]` → `CASE_SECTIONS`).
+- **Mangler bilder (flagget til Martin):** Malverk-fasetten (Canva-malene) er bygd som ren tekst — mangler eksportert bilde; et eget typografi-spesimen-grafikk finnes heller ikke (løst med kodet type-spec + rød plakat som eksempel). Begge kan hentes ut fra brandmanualen om ønskelig.
+
+### Nytt prosjekt: Sporty Onboarding (runde 43)
+- **La til prosjektet «Sporty Onboarding»** i `lib/projects.ts` (slug `sporty-onboarding`, tag «instruksjonsvideo», år «2026», kjølig blågrønn gradient), plassert etter SBD-Helene.
+- **Forside/thumbnail:** stillbilde fra videoen (Helene i senteret) konvertert fra skjermbilde til `public/projects/sporty-onboarding.webp` (1600×902, webp) via `sharp`. Midlertidig cover til endelig grafikk evt. lages.
+- **Dedikert, video-drevet case-side** `components/cases/SportyOnboarding.tsx` (+ `.module.css`), registrert i `CASES`. Bygd på Martins tekst: ingress, «utfordringen» (Mange små steg blir én terskel), videoen som midtpunkt, «idéen» (Som å bli vist rundt), «prosessen» som tidslinje og «resultatet». Vinklet mot praktisk/instruksjonelt innhold – klarhet framfor kreativ idé.
+- **Videoen som midtpunkt:** responsiv 16:9 YouTube-embed (`youtube-nocookie`, `loading="lazy"`), samme rammespråk som de andre video-casene. Ingen galleri (kun ett bilde foreløpig).
+- **Prosessen som scroll-tidslinje:** gjenbruker `ProcessTimeline` med Martins fem steg (Manus, Struktur, Opptak, Redigering, Distribusjon).
+- **Checkpoints:** progresjonsrailen får checkpoints på videoen og prosessen (`SECTION_IDS` → `CASE_SECTIONS`).
+- **Ekstern lenke:** pille-knapp i «resultatet» til videoen på YouTube (ny fane, `rel="noopener noreferrer"`).
+- Verifisert: `npm run build` ✅ (sporty-onboarding-siden genereres, 14 ruter), eslint rent.
+
+### Nytt prosjekt: SBD — video med Helene (runde 42)
+- **Rettet navn SBG → SBD** i `lib/projects.ts` (slug `sbg-helene` → `sbd-helene`, tittel «SBD — video med Helene»). Forsidebildet `public/projects/sbg-helene.webp` ble `git mv`-et til `sbd-helene.webp` og referansen oppdatert.
+- **Dedikert, video-drevet case-side** `components/cases/SbdHelene.tsx` (+ `.module.css`), registrert i `CASES`. Bygd på Martins tekst: ingress, «utfordringen» (En rekord lever kort), videoen som midtpunkt, «idéen» (Fra rekord til leksjon), «prosessen» som tidslinje, stillbilde-galleri og «resultatet».
+- **Videoen som midtpunkt:** responsiv 16:9 YouTube-embed (`youtube-nocookie`, `loading="lazy"`) i full innholdsbredde, samme rammespråk som det fremhevede bildet i de andre casene.
+- **Prosessen som scroll-tidslinje:** gjenbruker `ProcessTimeline` med Martins fem steg (Vinkelen, Manus, Opptak, Redigering, Publisering).
+- **Stillbilde-galleri:** gjenbruker `PhotoGallery` (justert rad-oppsett + lightbox) med de åtte Helene-bildene fra `public/projects/sporty-fotografi/helene/`.
+- **Checkpoints:** progresjonsrailen får checkpoints på videoen, prosessen og galleriet (`SECTION_IDS` → `CASE_SECTIONS` i `app/prosjekt/[slug]/page.tsx`).
+- **Eksterne lenker:** pille-knapper i «resultatet» som lenker til saken i Sporty-magasinet og videoen på YouTube (åpnes i ny fane, `rel="noopener noreferrer"`).
+- Verifisert: `npm run build` ✅ (sbd-helene-siden genereres, 13 ruter), eslint rent.
+
 ### Nytt prosjekt: Sporty-fotografi (runde 41)
 - **La til prosjektet «Sporty-fotografi»** i `lib/projects.ts` (slug `sporty-fotografi`, tag «fotografi», år «2024–nå», varm gradient), plassert etter Sporty-skjermer.
 - **Checkpoints for grupperingene:** progresjonsrailen (`ScrollProgress`) får nå ett checkpoint per galleri-gruppe på denne siden. Hver gruppe-`<section>` har en `id` (`galleri-ansatte`/`galleri-sekken`/`galleri-helene`), `SECTION_IDS` eksporteres fra case-en, og `app/prosjekt/[slug]/page.tsx` sender dem til `ScrollProgress` via et `CASE_SECTIONS`-oppslag (andre caser får fortsatt rail uten checkpoints).

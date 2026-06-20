@@ -1,0 +1,199 @@
+/* Case-specific bits for "Sporty Rebrand" — the flagship identity case. The page
+   is built from two big chapters ("Identiteten", "Systemet i bruk"), each split
+   into labelled facets. Structural layout (hero/meta/blocks/next) is reused from
+   ProjectPage.module.css; this file adds the chapter lead, the facet rhythm, the
+   media wrappers, the typography spec, the live colour swatches and the poster /
+   photo grids. */
+
+/* ---- Chapter lead — opens each big section a touch larger ---- */
+.lead {
+  margin-top: clamp(72px, 13vh, 150px);
+}
+
+.lead .h2 {
+  /* leans on the shared .h2; nothing extra needed but kept for future tuning */
+}
+
+/* ---- Facet — a labelled sub-section within a chapter ---- */
+.facet {
+  margin-top: clamp(48px, 8vh, 96px);
+  margin-bottom: clamp(20px, 3.5vh, 36px);
+}
+
+.h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.4rem, 1rem + 1.5vw, 2.1rem);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  margin: 0 0 clamp(14px, 2vh, 22px);
+  color: var(--fg);
+}
+
+/* ---- Media wrapper — fills the main content box flush. These live INSIDE
+   <main class="main">, which already supplies the 1080px max-width, the auto
+   centering and the side padding — so this must NOT re-apply any of that, or the
+   image ends up double-indented (sitting further right than the text). Just span
+   the full content width so images line up with the text column's left edge. ---- */
+.media {
+  width: 100%;
+  margin: clamp(8px, 2vh, 20px) 0 0;
+}
+
+.mediaImg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--card-radius);
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.015);
+}
+
+/* ---- Mønster pair — the pattern detail (landscape) and the can (portrait) have
+   very different native ratios; force a shared square frame with object-fit:cover
+   so the two columns line up to the exact same height. ---- */
+.pairImg {
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* ---- Typografi — spec list beside a display example. Same flush-width rule as
+   .media: it sits inside <main>, so no extra max-width / padding / auto-margin. ---- */
+.typoGrid {
+  width: 100%;
+  margin: clamp(8px, 2vh, 20px) 0 0;
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 460px);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: start;
+}
+
+.typoSpec {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 2.4vh, 24px);
+}
+
+.typoRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: clamp(14px, 2.4vh, 24px);
+  border-bottom: 1px solid var(--line);
+}
+
+.typoRow:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.typoRow dt {
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted-dim);
+}
+
+.typoRow dd {
+  margin: 0;
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.18rem);
+  color: var(--fg);
+}
+
+.typoFigure {
+  margin: 0;
+}
+
+/* ---- Farger — live swatches ---- */
+.swatches {
+  list-style: none;
+  margin: 0 0 clamp(28px, 5vh, 48px);
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: clamp(14px, 2vw, 22px);
+}
+
+.swatch {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.swatchChip {
+  display: block;
+  width: 100%;
+  height: clamp(80px, 12vh, 120px);
+  border-radius: var(--card-radius);
+  border: 1px solid var(--line-strong);
+  margin-bottom: 8px;
+}
+
+.swatchName {
+  font-size: 0.82rem;
+  color: var(--fg);
+  letter-spacing: 0.02em;
+}
+
+.swatchHex {
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.swatchNote {
+  font-size: 0.74rem;
+  color: var(--muted-dim);
+}
+
+/* ---- Posters — three support-colour variants side by side ---- */
+.posters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(12px, 1.6vw, 20px);
+  margin-bottom: clamp(10px, 1.6vh, 16px);
+}
+
+.posterImg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--card-radius);
+  border: 1px solid var(--line);
+}
+
+/* ---- Brandfoto grid — four staff portraits ---- */
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(10px, 1.4vw, 18px);
+}
+
+.photoImg {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: var(--card-radius);
+  border: 1px solid var(--line);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 760px) {
+  .typoGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .photoGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .posters {
+    grid-template-columns: 1fr;
+  }
+}

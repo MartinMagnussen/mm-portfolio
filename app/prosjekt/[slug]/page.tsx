@@ -6,6 +6,15 @@ import SportySkjermer from "@/components/cases/SportySkjermer";
 import SportyFotografi, {
   SECTION_IDS as sportyFotografiSections,
 } from "@/components/cases/SportyFotografi";
+import SbdHelene, {
+  SECTION_IDS as sbdHeleneSections,
+} from "@/components/cases/SbdHelene";
+import SportyOnboarding, {
+  SECTION_IDS as sportyOnboardingSections,
+} from "@/components/cases/SportyOnboarding";
+import SportyRebrand, {
+  SECTION_IDS as sportyRebrandSections,
+} from "@/components/cases/SportyRebrand";
 import SmoothScroll from "@/components/SmoothScroll";
 import ScrollProgress from "@/components/ScrollProgress";
 import { projects } from "@/lib/projects";
@@ -19,12 +28,18 @@ const CASES: Record<
   "fra-sofa-til-sporty": FraSofaTilSporty,
   "sporty-skjermer": SportySkjermer,
   "sporty-fotografi": SportyFotografi,
+  "sbd-helene": SbdHelene,
+  "sporty-onboarding": SportyOnboarding,
+  "sporty-rebrand": SportyRebrand,
 };
 
 // Reading-progress checkpoints per case (element ids present in that page).
 // Cases without an entry get a plain rail with no checkpoints.
 const CASE_SECTIONS: Record<string, string[]> = {
   "sporty-fotografi": sportyFotografiSections,
+  "sbd-helene": sbdHeleneSections,
+  "sporty-onboarding": sportyOnboardingSections,
+  "sporty-rebrand": sportyRebrandSections,
 };
 
 // Pre-render one page per project at build time.
