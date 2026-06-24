@@ -12,7 +12,7 @@ import styles from "./Cursor.module.css";
 // a ref and writes `transform` straight to the node, so the component never
 // re-renders while the cursor moves.
 const DOT = 8; // small solid square (px)
-const DOT_SPEED = 0.14; // follow smoothing (higher = snappier, less delay)
+const SQUEEZE_EASE = 0.14; // how fast the velocity squeeze eases (position is instant)
 const SQUEEZE = 0.5; // max stretch at top velocity
 const VEL_CAP = 150; // velocity clamp (matches the reference effect)
 
@@ -71,12 +71,13 @@ export default function Cursor() {
       prev.x = mouse.x;
       prev.y = mouse.y;
       const vel = Math.min(Math.hypot(dx, dy) * 4, VEL_CAP);
-      scale += ((vel / VEL_CAP) * SQUEEZE - scale) * DOT_SPEED;
+      scale += ((vel / VEL_CAP) * SQUEEZE - scale) * SQUEEZE_EASE;
 
       press += ((pressed ? 1 : 0) - press) * 0.25;
 
-      d.x += (mouse.x - d.x) * DOT_SPEED;
-      d.y += (mouse.y - d.y) * DOT_SPEED;
+      // Position locks straight to the pointer — no follow delay on the square.
+      d.x = mouse.x;
+      d.y = mouse.y;
       // Dips a little on press. transform-origin is centre, so scaling keeps the
       // square pinned to the cursor.
       const dP = 1 - press * 0.4;

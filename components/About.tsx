@@ -2,12 +2,12 @@ import Link from "next/link";
 import PortraitDeck from "./PortraitDeck";
 import styles from "./About.module.css";
 
-// Placeholder deck: the same portrait repeated so the card-stack interaction is
-// visible. Swap these for distinct images later — order top → bottom.
+// Portrait deck, ordered top → bottom. Add more distinct photos here as they
+// come; for now it alternates the two available portraits.
 const PHOTOS = [
+  "/om/martin-2.webp",
   "/om/martin.webp",
-  "/om/martin.webp",
-  "/om/martin.webp",
+  "/om/martin-2.webp",
   "/om/martin.webp",
   "/om/martin.webp",
 ];
